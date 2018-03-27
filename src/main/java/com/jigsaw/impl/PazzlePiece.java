@@ -1,4 +1,4 @@
-package src.main.java.com.jigsaw;
+package src.main.java.com.jigsaw.impl;
 
 public class PazzlePiece {
 	
