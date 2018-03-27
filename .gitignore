@@ -3,3 +3,9 @@
 /.idea/modules.xml
 /.idea/vcs.xml
 /.idea/workspace.xml
+/target/
+/bin/
+/.classpath
+/.gitignore.orig
+/.project
+/.settings/org.eclipse.jdt.core.prefs
