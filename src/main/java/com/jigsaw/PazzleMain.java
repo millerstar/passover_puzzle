@@ -1,3 +1,4 @@
+package src.main.java.com.jigsaw;
 
 public class PazzleMain {
 
