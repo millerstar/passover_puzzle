@@ -57,4 +57,9 @@ public class PuzzlePiece {
     public int[] getPieceCoordinates() {
         return pieceCoordinates;
     }
+
+    @Override
+    public String toString(){
+        return "ID= " +  this.pieceID + this.topLeft + this.topRight +this.bottomLeft + this.bottomRight;
+    }
 }
