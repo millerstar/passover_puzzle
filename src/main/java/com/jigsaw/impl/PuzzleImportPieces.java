@@ -6,7 +6,7 @@ public class PuzzleImportPieces {
 
     // class members
     private static String PUZZLE_PIECES_PATH;
-    private static final String inputFileName = "puzzlePiecesFile.txt";
+    private static final String INPUT_FILE_NAME = "puzzlePiecesFile.txt";
 
     // getters
     public static String getPuzzlePiecesPath() {
@@ -16,6 +16,6 @@ public class PuzzleImportPieces {
     }
 
     public static String getInputFileName() {
-        return inputFileName;
+        return INPUT_FILE_NAME;
     }
 }
