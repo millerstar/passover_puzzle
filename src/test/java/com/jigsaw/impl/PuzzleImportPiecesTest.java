@@ -1,16 +1,13 @@
 package com.jigsaw.impl;
 
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
 import java.io.BufferedReader;
-import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.nio.charset.Charset;
 import java.nio.file.Files;
 import java.nio.file.Path;
-import java.nio.file.Paths;
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -48,7 +45,6 @@ class PuzzleImportPiecesTest {
                 break;
             }
             if (!isEmptyLine && currentLine.contains("NumElements")) {
-                System.out.println(currentLine.indexOf("="));
                 actualString = currentLine.substring(0, currentLine.indexOf("="));
                 break;
             }
@@ -70,6 +66,6 @@ class PuzzleImportPiecesTest {
                 counter++;
             }
         }
-        assertTrue(counter == 1, "The 'NumElements' was not display in the first line");
+        assertTrue(counter == 1,"The 'NumElements' was not display in the first line");
     }
 }
