@@ -11,12 +11,12 @@ public class PuzzlePieceValidator {
         if (size>4 || size<=0){
             return false; // We got wrong amount of coordinates
         }
-        int topLeft = pieceToValidate.getTopLeft();
-        int topRight = pieceToValidate.getTopRight();
-        int bottomLeft = pieceToValidate.getBottomLeft();
-        int bottomRight = pieceToValidate.getBottomRight();
+        int sideLeft = pieceToValidate.getSideLeft();
+        int sideRight = pieceToValidate.getSideRight();
+        int sideTop = pieceToValidate.getSideTop();
+        int sideBottom = pieceToValidate.getSideBottom();
 
-        if (topLeft>1||topLeft<0||topRight>1||topRight<0||bottomLeft>1||bottomLeft<0||bottomRight>1||bottomRight<0){
+        if (sideLeft>1||sideLeft<0||sideRight>1||sideRight<0||sideTop>1||sideTop<0||sideBottom>1||sideBottom<0){
             return false;// we got the wrong coordinates
         }
         return true;
@@ -27,12 +27,12 @@ public class PuzzlePieceValidator {
     }
 
     public boolean isPiaceSquar(PuzzlePiece pieceToValidate){
-        int topLeft = pieceToValidate.getTopLeft();
-        int topRight = pieceToValidate.getTopRight();
-        int bottomLeft = pieceToValidate.getBottomLeft();
-        int bottomRight = pieceToValidate.getBottomRight();
+        int sideLeft = pieceToValidate.getSideLeft();
+        int sideRight = pieceToValidate.getSideRight();
+        int sideTop = pieceToValidate.getSideTop();
+        int sideBottom = pieceToValidate.getSideBottom();
 
-        if (topLeft==0&&topRight==0&&bottomLeft==0&&bottomRight==0) {
+        if (sideLeft==0 && sideRight==0 && sideTop==0 && sideBottom==0) {
             return true;
         }
         return false;
