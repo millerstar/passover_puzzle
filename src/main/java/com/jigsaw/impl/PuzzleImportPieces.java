@@ -8,6 +8,7 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 public class PuzzleImportPieces {
@@ -36,8 +37,15 @@ public class PuzzleImportPieces {
         return path;
     }
 
-    public List<PuzzlePiece> getPuzzlePieces() {
-        return puzzlePieces;
+    public static List<PuzzlePiece> getPuzzlePieces() throws IOException {
+        List<String[]> elementsDetailsList = PuzzleImportPieces.getElementsDetails();
+        List<PuzzlePiece> puzzlePieceList = new ArrayList<>();
+        for (String[] element : elementsDetailsList) {
+            int[] elementDetailsArray = Arrays.stream(element).mapToInt(Integer::parseInt).toArray();
+            PuzzlePiece puzzlePiece = new PuzzlePiece(elementDetailsArray[1], elementDetailsArray[2], elementDetailsArray[3], elementDetailsArray[4], elementDetailsArray[0]);
+            puzzlePieceList.add(puzzlePiece);
+        }
+        return puzzlePieceList;
     }
 
     // methods

@@ -119,4 +119,10 @@ class PuzzleImportPiecesTest {
         int numOfElements = PuzzleImportPieces.getNumberOfElements();
         assertEquals(elementsDetailsList.size(), numOfElements,"The number of elements in the file is incorrect");
     }
+
+    @Test
+    void test() throws IOException {
+        List<PuzzlePiece> temp = PuzzleImportPieces.getPuzzlePieces();
+        System.out.println("a");
+    }
 }
