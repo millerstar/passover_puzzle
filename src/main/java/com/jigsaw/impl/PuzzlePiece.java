@@ -60,6 +60,6 @@ public class PuzzlePiece {
 
     @Override
     public String toString(){
-        return "ID= " +  this.pieceID + this.sideLeft + this.sideRight +this.sideTop + this.sideBottom;
+        return "ID = " +  this.pieceID + ", Sides = " + this.sideLeft + " " + this.sideRight + " " + this.sideTop + " " + this.sideBottom;
     }
 }

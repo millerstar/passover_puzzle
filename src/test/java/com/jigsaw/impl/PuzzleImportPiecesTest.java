@@ -123,6 +123,6 @@ class PuzzleImportPiecesTest {
     @Test
     void test() throws IOException {
         List<PuzzlePiece> temp = PuzzleImportPieces.getPuzzlePieces();
-        System.out.println("a");
+        System.out.println(temp);
     }
 }
