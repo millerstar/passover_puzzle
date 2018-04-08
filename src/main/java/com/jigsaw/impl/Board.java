@@ -20,12 +20,23 @@ public class Board {
     }
 
     // TODO copy constructor
-    public Board(Board board){
-        this.id = "clonedFrom_" + board.getId();
-        this.board = board.board; // TODO
-        this.nextPieceIndex = board.nextPieceIndex; // TODO
-        this.frameSidePieces = board.frameSidePieces; // TODO
-        this.innerPieces = board.innerPieces; //TODO
+    public Board(Board boardToClone){
+        this.id = "clonedFrom_" + boardToClone.getId();
+
+        this.board = new PuzzlePiece[boardToClone.board.length][boardToClone.board[0].length];
+        for(int i =0; i < this.board.length; i++){
+            for(int j=0; j < this.board[0].length; j++){
+                this.board[i][j] = boardToClone.board[i][j];
+            }
+        }
+
+        this.frameSidePieces.addAll(boardToClone.frameSidePieces);
+        this.innerPieces.addAll(boardToClone.innerPieces);
+
+        this.nextPieceIndex = new int[boardToClone.nextPieceIndex.length];
+        for(int i = 0; i < this.nextPieceIndex.length; i++){
+            this.nextPieceIndex[i] = boardToClone.nextPieceIndex[i];
+        }
     }
 
     public Board(String id){
