@@ -1,10 +1,8 @@
 package com.jigsaw.impl;
 
-
-
 /**
  *
- *  Author:
+ *  Author: Idan Agam
  *  Date:   01/04/2018
  */
 
@@ -67,7 +65,7 @@ public class PuzzlePiece {
     }
 
     public boolean isSumOfAllSidesZero() {
-        //TODO check when to use
+        //TODO: check when to use
 
         return this.sideLeft == 0 &&
                 this.sideRight == 0 &&
@@ -107,10 +105,10 @@ public class PuzzlePiece {
         if (this.pieceID == ((PuzzlePiece) other).pieceID) {return true; }
 
             PuzzlePiece o = (PuzzlePiece) other;
-            return (o.getSideLeft() == ((PuzzlePiece) other).getSideLeft() &&
-                    o.getSideRight() == ((PuzzlePiece) other).getSideRight() &&
-                    o.getSideTop() == ((PuzzlePiece) other).getSideTop()) &&
-                    o.getSideBottom() == ((PuzzlePiece) other).getSideBottom();
+            return (this.getSideLeft() == ((PuzzlePiece) other).getSideLeft() &&
+                    this.getSideRight() == ((PuzzlePiece) other).getSideRight() &&
+                    this.getSideTop() == ((PuzzlePiece) other).getSideTop()) &&
+                    this.getSideBottom() == ((PuzzlePiece) other).getSideBottom();
         }
     }
 
