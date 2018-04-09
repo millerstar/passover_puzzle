@@ -1,5 +1,12 @@
 package com.jigsaw.impl;
 
+
+/**
+ *
+ *  Author:
+ *  Date:   01/04/2018
+ */
+
 public class PuzzlePieceValidator {
 
     //Private class members

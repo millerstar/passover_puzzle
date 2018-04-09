@@ -1,5 +1,13 @@
 package com.jigsaw.impl;
 
+
+
+/**
+ *
+ *  Author:
+ *  Date:   01/04/2018
+ */
+
 public class PuzzlePiece {
 
     private int sideLeft, sideRight, sideTop, sideBottom;

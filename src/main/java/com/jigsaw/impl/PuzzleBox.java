@@ -1,5 +1,13 @@
 package com.jigsaw.impl;
 
+
+/**
+ *
+ *  Author:
+ *  Date:   06/04/2018
+ */
+
+
 import javafx.scene.control.cell.CheckBoxListCell;
 
 import java.util.ArrayList;

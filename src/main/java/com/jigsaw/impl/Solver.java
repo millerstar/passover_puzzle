@@ -3,6 +3,13 @@ package com.jigsaw.impl;
 import java.util.ArrayList;
 import java.util.List;
 
+
+/**
+ *
+ *  Author:
+ *  Date:   01/04/2018
+ */
+
 public class Solver {
 
     private List<Board> boards = new ArrayList<>();
