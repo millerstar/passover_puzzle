@@ -62,6 +62,20 @@ public class PuzzleBox {
         }
         return retVal;
     }
+
+    public boolean isSumOfAllSidesZero() {
+        int sum = 0;
+        for (PuzzlePiece puzzleElement : allPiecesInBoard) {
+            sum = puzzleElement.getSumOfAllSides();
+        }
+        if (sum != 0) {
+            return false;
+        }
+        return true;
+    }
+
+
+
 }
 
 

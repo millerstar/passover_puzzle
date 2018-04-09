@@ -95,6 +95,8 @@ public class Solver {
         }
     }
 
+
+
     //TODO
     private int[] findNewNextIndex(int row, int col, PuzzlePiece[][] currentBoard) {
         return null;
@@ -109,6 +111,7 @@ public class Solver {
     private PuzzlePiece findComplementarySides(PuzzlePiece[][] currentBoard, int row, int col) {
         return null;
     }
+
 
 
 }
