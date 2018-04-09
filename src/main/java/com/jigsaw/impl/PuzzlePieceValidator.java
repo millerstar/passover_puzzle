@@ -2,8 +2,7 @@ package com.jigsaw.impl;
 
 
 /**
- *
- *  Author:
+ *  Author: Idan Agam
  *  Date:   01/04/2018
  */
 
@@ -33,7 +32,7 @@ public class PuzzlePieceValidator {
         return pieceToValidate==null;
     }
 
-    public boolean isPiaceSquar(PuzzlePiece pieceToValidate){
+    public boolean isPieceASquare(PuzzlePiece pieceToValidate){
         int sideLeft = pieceToValidate.getSideLeft();
         int sideRight = pieceToValidate.getSideRight();
         int sideTop = pieceToValidate.getSideTop();

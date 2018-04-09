@@ -1,5 +1,8 @@
 package com.jigsaw.impl;
 
+import java.util.Arrays;
+import java.util.Objects;
+
 /**
  *
  *  Author: Idan Agam
@@ -18,6 +21,13 @@ public class PuzzlePiece {
         this.sideTop = sideTop;
         this.sideBottom = sideBottom;
         this.pieceID = pieceID;
+    }
+
+    @Override
+    public int hashCode() {
+
+        int result = Objects.hash(sideLeft, sideRight, sideTop, sideBottom);
+        return 31 * result + Arrays.hashCode(pieceCoordinates);
     }
 
     public int getSideLeft() {
