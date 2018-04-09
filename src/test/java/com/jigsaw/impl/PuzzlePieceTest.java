@@ -19,30 +19,38 @@ public class PuzzlePieceTest {
     PuzzlePiece nonValidPiece = new PuzzlePiece(2,0000,100,-80,-1);
 
     @Test
-    @DisplayName("testGetSideLeft")
+    @DisplayName("test Get&set of SideLeft")
     public  void testGetSideLeft(){
         piece1.setSideLeft(1);
         assertEquals(piece1.getSideLeft(),1);
     }
 
     @Test
-    @DisplayName("testGetSideRight")
+    @DisplayName("test Get&set of SideRight")
     public  void testGetSideRight(){
         piece1.setSideRight(0);
         assertEquals(piece1.getSideRight(),0);
     }
 
     @Test
-    @DisplayName("testGetSideTop")
+    @DisplayName("test Get&set of SideTop")
     public  void testGetSideTop(){
         piece1.setSideTop(1);
         assertEquals(piece1.getSideTop(),1);
     }
 
     @Test
-    @DisplayName("testGetSideTop")
-    public  void testGetSideButtom(){
+    @DisplayName("test Get&set of SideBottom")
+    public  void testGetSideBottom(){
         piece1.setSideBottom(1);
         assertEquals(piece1.getSideBottom(),1);
     }
+
+
+
+
+
+
+
+
 }
