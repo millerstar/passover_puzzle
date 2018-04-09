@@ -25,7 +25,6 @@ public class PuzzlePiece {
 
     @Override
     public int hashCode() {
-
         int result = Objects.hash(sideLeft, sideRight, sideTop, sideBottom);
         return 31 * result + Arrays.hashCode(pieceCoordinates);
     }
