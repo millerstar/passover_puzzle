@@ -62,4 +62,13 @@ public class PuzzlePiece {
     public String toString(){
         return "ID = " +  this.pieceID + ", Sides = " + this.sideLeft + " " + this.sideRight + " " + this.sideTop + " " + this.sideBottom;
     }
+
+    @Override
+    public boolean equals(Object other){
+        if(!(other instanceof PuzzlePiece)) {
+            return false;
+        }
+        PuzzlePiece o = (PuzzlePiece) other;
+        return (o.pieceID==pieceID);
+    }
 }
