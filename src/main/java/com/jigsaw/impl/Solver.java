@@ -41,7 +41,6 @@ public class Solver {
             int row = 0;
             int col = 0;
             currentBoard = board;
-            String slotKey = Integer.toString(row) + Integer.toString(col);
             while(true){
                 if (row < 0){
                     boards.remove(board);
@@ -51,6 +50,7 @@ public class Solver {
                     isSolved = true;
                     break;
                 }
+                String slotKey = Integer.toString(row) + Integer.toString(col);
                 if (!slotToPieces.containsKey(slotKey)) {
                     slotToPieces.put(slotKey, piecesForSlot(row, col));
                 }
@@ -63,7 +63,12 @@ public class Solver {
 
                 if (possiblePiecesForSlot.size() > 0) {
                     PuzzlePiece pieceToBePlaced = possiblePiecesForSlot.get(0);
+                    if(currentBoard[row][col] != null){
+                        poolOfPieces.add(currentBoard[row][col]);
+                        System.out.println(currentBoard[row][col] + " removed");
+                    }
                     currentBoard[row][col] = pieceToBePlaced;
+                    System.out.println(pieceToBePlaced + " added");
                     poolOfPieces.remove(pieceToBePlaced);
                     possiblePiecesForSlot.remove(pieceToBePlaced);
                     row = stepForwardRow(row, col);
@@ -121,10 +126,14 @@ public class Solver {
             int backRow = stepBackRow(row, col);
             int backColumn = stepBackColumn(row, col);
             PuzzlePiece oneStepBackPiece = currentBoard[backRow][backColumn];
-            sideLeft = oneStepBackPiece.getSideLeft();
-            sideTop = oneStepBackPiece.getSideTop();
-            sideRight = oneStepBackPiece.getSideRight();
-            sideBottom = oneStepBackPiece.getSideBottom();
+            sideLeft = oneStepBackPiece.getSideRight()*(-1);
+//            sideTop = oneStepBackPiece.getSideTop();
+//            sideRight = oneStepBackPiece.getSideRight();
+//            sideBottom = oneStepBackPiece.getSideBottom() ;
+            sideTop = 2;
+            sideRight = 2;
+            sideBottom = 2 ;
+
         }
 
         for(PuzzlePiece piece: poolOfPieces){
@@ -165,7 +174,7 @@ public class Solver {
         PuzzlePiece p1 = new PuzzlePiece(0, 1, 0, 0, 1);
         PuzzlePiece p2 = new PuzzlePiece(-1, 0, 0, 0, 2);
         PuzzlePiece p3 = new PuzzlePiece(0, 1, 0, 0, 3);
-        PuzzlePiece p4 = new PuzzlePiece(-1, 1, 0, 0, 4);
+        PuzzlePiece p4 = new PuzzlePiece(-1, 0, 0, 0, 4);
         List<PuzzlePiece> pieces = new ArrayList<>();
         pieces.add(p1);
         pieces.add(p2);
