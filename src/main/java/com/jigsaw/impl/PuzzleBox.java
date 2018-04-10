@@ -82,8 +82,9 @@ public class PuzzleBox {
         return true;
     }
 
-
-
+    public List<PuzzlePiece> getAllPiecesInBoard() {
+        return allPiecesInBoard;
+    }
 }
 
 

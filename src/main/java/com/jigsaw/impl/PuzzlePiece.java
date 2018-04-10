@@ -118,7 +118,9 @@ public class PuzzlePiece {
                     this.getSideRight() == ((PuzzlePiece) other).getSideRight() &&
                     this.getSideTop() == ((PuzzlePiece) other).getSideTop()) &&
                     this.getSideBottom() == ((PuzzlePiece) other).getSideBottom();
-        }
     }
+
+}
+
 
 
