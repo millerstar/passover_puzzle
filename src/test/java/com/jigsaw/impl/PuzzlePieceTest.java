@@ -47,7 +47,17 @@ public class PuzzlePieceTest {
     }
 
 
+    @Test
+    @DisplayName("Test isSumOfAllSidesZero method")
+    public void testIsSumOfAllSidesZero(){
+        assertEquals(squarePiece.isSumOfAllSidesZero(), true);
+    }
 
+    @Test
+    @DisplayName("Test getSumOfAllSides method")
+    public void testgetSumOfAllSides(){
+        assertEquals(squarePiece.getSumOfAllSides(),0);
+    }
 
 
 
