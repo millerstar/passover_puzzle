@@ -7,9 +7,6 @@ package com.jigsaw.impl;
  *  Date:   06/04/2018
  */
 
-
-import javafx.scene.control.cell.CheckBoxListCell;
-
 import java.util.ArrayList;
 import java.util.List;
 
