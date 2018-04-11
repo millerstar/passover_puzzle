@@ -25,6 +25,10 @@ public class Solver {
         this.poolOfPieces.addAll(puzzleBox.getAllPiecesInBoard());
     }
 
+    public PuzzleBox getPuzzleBox() {
+        return puzzleBox;
+    }
+
     public void createPossibleBoards(){
         int numOfPieces = puzzleBox.getAllPiecesInBoard().size();
         for( int i = numOfPieces/2; i >= 2; i--){
@@ -82,7 +86,11 @@ public class Solver {
             }
             if(isSolved){
                 System.out.println("Puzzle solved : " + currentBoard.toString());
+                break;
             }
+        }
+        if(!isSolved){
+            System.out.println("No solution found for given pieces");
         }
     }
 
@@ -123,16 +131,10 @@ public class Solver {
             sideRight = 2;
             sideBottom = 2;
         } else {
-            int backRow = stepBackRow(row, col);
-            int backColumn = stepBackColumn(row, col);
-            PuzzlePiece oneStepBackPiece = currentBoard[backRow][backColumn];
-            sideLeft = oneStepBackPiece.getSideRight()*(-1);
-//            sideTop = oneStepBackPiece.getSideTop();
-//            sideRight = oneStepBackPiece.getSideRight();
-//            sideBottom = oneStepBackPiece.getSideBottom() ;
-            sideTop = 2;
-            sideRight = 2;
-            sideBottom = 2 ;
+            sideLeft = getRightSideFromFromLeftPiece(row, col)*(-1);
+            sideTop = getBottomSideFromUpPiece(row, col) *(-1);
+            sideRight = getLeftSideFromRightPice(row, col) ; // should be 0 or 2
+            sideBottom = getTopSideFromDownPiece(row, col) ; // should be 0 or 2
 
         }
 
@@ -142,6 +144,40 @@ public class Solver {
             }
         }
         return ret;
+    }
+
+    private int getTopSideFromDownPiece(int row, int col) {
+        if ( row == currentBoard.length - 1){
+            return 0;
+        } else {
+            return 2;
+        }
+    }
+
+    private int getLeftSideFromRightPice(int row, int col) {
+        if (col == currentBoard[0].length - 1){
+            return 0;
+        } else {
+            return 2;
+        }
+    }
+
+    private int getBottomSideFromUpPiece(int row, int col) {
+        if( row == 0){
+            return 0;
+        } else {
+            return currentBoard[row-1][col].getSideBottom();
+        }
+    }
+
+    private int getRightSideFromFromLeftPiece(int row, int col){
+        if( col == 0){
+            return 0;
+        } else {
+            int backRow = stepBackRow(row, col);
+            int backColumn = stepBackColumn(row, col);
+            return currentBoard[backRow][backColumn].getSideRight();
+        }
     }
 
 
