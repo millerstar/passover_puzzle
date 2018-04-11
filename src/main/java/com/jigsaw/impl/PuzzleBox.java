@@ -3,7 +3,7 @@ package com.jigsaw.impl;
 
 /**
  *
- *  Author:
+ *  Author: Idan Agam
  *  Date:   06/04/2018
  */
 
@@ -24,8 +24,7 @@ public class PuzzleBox {
         straightRightLeftPieces = getStraightPiecesGroup();
         maleRightLeftPieces = getMalePiecesGroup();
         femaleRightLeftPieces = getFemalePiecesGroup();
-
-
+        numOfPieces=pieces.size();
     }
 
     public int getNumOfPieces() {
@@ -83,16 +82,18 @@ public class PuzzleBox {
         return allPiecesInBoard;
     }
 
+    //Make sure the puzzle is solve able
     private boolean validateThereAreAtLeast2CornersOnPuzzleBox(){
-        int count=0;
+        int cornersCount=0;
         for (PuzzlePiece piece :allPiecesInBoard) {
-            if (piece.isTopRightCorner()){
-                count++;
+            if (piece.isPieceACorner()){
+                cornersCount++;
             }
-
         }
-
+        return cornersCount>2;
     }
+
+    private boolean
 }
 
 
