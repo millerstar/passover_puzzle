@@ -82,6 +82,17 @@ public class PuzzleBox {
     public List<PuzzlePiece> getAllPiecesInBoard() {
         return allPiecesInBoard;
     }
+
+    private boolean validateThereAreAtLeast2CornersOnPuzzleBox(){
+        int count=0;
+        for (PuzzlePiece piece :allPiecesInBoard) {
+            if (piece.isTopRightCorner()){
+                count++;
+            }
+
+        }
+
+    }
 }
 
 
