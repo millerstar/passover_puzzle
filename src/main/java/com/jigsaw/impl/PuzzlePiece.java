@@ -104,6 +104,9 @@ public class PuzzlePiece {
 
     public boolean isPieceACorner() { return isTopRightCorner()||isBottomRightCorner()||isTopLeftCorner()||isBottomLeftCorner(); }
 
+    public boolean isPieceASquare() { return getSumOfAllSides()==0; }
+
+
 
 
     @Override

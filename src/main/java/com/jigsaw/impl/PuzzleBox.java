@@ -82,7 +82,7 @@ public class PuzzleBox {
         return allPiecesInBoard;
     }
 
-    //Make sure the puzzle is solve able
+    //Make sure the puzzle is solvable
     private boolean validateThereAreAtLeast2CornersOnPuzzleBox(){
         int cornersCount=0;
         for (PuzzlePiece piece :allPiecesInBoard) {
@@ -92,8 +92,15 @@ public class PuzzleBox {
         }
         return cornersCount>2;
     }
+    //Checking number of pieces in board, etc..
+    private boolean isPuzzleSolvable(){
+        if (numOfPieces==1){
+            return allPiecesInBoard.get(0).isPieceASquare();
+        }
+        if ((numOfPieces==0)){return false;}
 
-    private boolean
+        return validateThereAreAtLeast2CornersOnPuzzleBox();
+        }
 }
 
 
