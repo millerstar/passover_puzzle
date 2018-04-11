@@ -25,7 +25,7 @@ public class Solver {
         this.poolOfPieces.addAll(puzzleBox.getAllPiecesInBoard());
     }
 
-    private void createPossibleBoards(){
+    public void createPossibleBoards(){
         int numOfPieces = puzzleBox.getAllPiecesInBoard().size();
         for( int i = numOfPieces/2; i >= 2; i--){
             if(numOfPieces % i == 0){
@@ -168,6 +168,10 @@ public class Solver {
             sideStatus[3] = sideBottom == piece.getSideBottom();
         }
         return sideStatus[0] && sideStatus[1] && sideStatus[2] && sideStatus[3];
+    }
+
+    public List<PuzzlePiece> getPoolOfPieces() {
+        return poolOfPieces;
     }
 
     public static void main(String[] args) {
