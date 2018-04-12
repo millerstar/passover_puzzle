@@ -58,8 +58,8 @@ class PuzzleImportPiecesTest {
     @Test
     @DisplayName("Is NumElements in first line")
     void isNumElementsFirst() throws IOException {
-        Path path = PuzzleImportPieces.getPath();
-        BufferedReader reader = Files.newBufferedReader(path, Charset.forName("UTF-8"));
+        FileManager fileManager = new FileManager();
+        BufferedReader reader = fileManager.openFile(fileManager.getImportPuzzleFileName());
         String currentLine = null;
         int counter = 1;
         while ((currentLine = reader.readLine()) != null) {
@@ -69,14 +69,15 @@ class PuzzleImportPiecesTest {
                 counter++;
             }
         }
+        fileManager.closeFile(reader);
         assertTrue(counter == 1, "The 'NumElements' was not display in the first line");
     }
 
     @Test
     @DisplayName("Is equals sigh exists")
     void isEqualsExist() throws IOException {
-        Path path = PuzzleImportPieces.getPath();
-        BufferedReader reader = Files.newBufferedReader(path, Charset.forName("UTF-8"));
+        FileManager fileManager = new FileManager();
+        BufferedReader reader = fileManager.openFile(fileManager.getImportPuzzleFileName());
         String currentLine = null;
         int equalIndex = 0;
         int nextEqualIndex = 0;
@@ -87,6 +88,7 @@ class PuzzleImportPiecesTest {
                 break;
             }
         }
+        fileManager.closeFile(reader);
         assertTrue(equalIndex > 10 && nextEqualIndex < 1, "The equal sign was not display as expected");
     }
 
