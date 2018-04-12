@@ -33,8 +33,8 @@ class PuzzleImportPiecesTest {
     @Test
     @DisplayName("Is NumElements appear")
     void isNumElementsAppear() throws IOException {
-        Path path = PuzzleImportPieces.getPath();
-        BufferedReader reader = Files.newBufferedReader(path, Charset.forName("UTF-8"));
+        FileManager fileManager = new FileManager();
+        BufferedReader reader = fileManager.openFile(fileManager.getImportPuzzleFileName());
         String currentLine = null;
         boolean isEmptyLine;
         String actualString = null;
@@ -51,6 +51,7 @@ class PuzzleImportPiecesTest {
                 break;
             }
         }
+        fileManager.closeFile(reader);
         assertEquals(expectedVal, actualString, "The '" + expectedVal + "' was not display in the file");
     }
 
