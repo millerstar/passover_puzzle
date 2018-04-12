@@ -8,8 +8,6 @@ package com.jigsaw.impl;
  */
 
 
-import javafx.scene.control.cell.CheckBoxListCell;
-
 import java.util.ArrayList;
 import java.util.List;
 
