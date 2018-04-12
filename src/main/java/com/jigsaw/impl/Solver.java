@@ -14,11 +14,13 @@ import java.util.Map;
 
 public class Solver {
 
-    private List<PuzzlePiece[][]> boards = new ArrayList<>();
+    private List<PuzzlePiece[][]> boards = new ArrayList<>(); // todo add class for board, add members that save prev and current possition
     private PuzzlePiece[][] currentBoard;
     private PuzzleBox puzzleBox;
     private List<PuzzlePiece> poolOfPieces = new ArrayList<>();
     private Map<String, List<PuzzlePiece>> slotToPieces= new HashMap<>();
+    private int row;
+    private int col;
 
     public Solver(PuzzleBox puzzleBox) {
         this.puzzleBox = puzzleBox;
@@ -42,12 +44,11 @@ public class Solver {
     public void solvePuzzle(){
         boolean isSolved = false;
         for(PuzzlePiece[][] board: boards){
-            int row = 0;
-            int col = 0;
+            row = 0;
+            col = 0;
             currentBoard = board;
             while(true){
                 if (row < 0){
-                    boards.remove(board);
                     break;
                 }
                 if (row == currentBoard.length){
@@ -56,32 +57,37 @@ public class Solver {
                 }
                 String slotKey = Integer.toString(row) + Integer.toString(col);
                 if (!slotToPieces.containsKey(slotKey)) {
-                    slotToPieces.put(slotKey, piecesForSlot(row, col));
+                    slotToPieces.put(slotKey, piecesForSlot());
                 }
 
                 List<PuzzlePiece> possiblePiecesForSlot = slotToPieces.get(slotKey);
+                if(possiblePiecesForSlot.isEmpty()){
+                    prepareStepBack(slotKey, possiblePiecesForSlot);
+                    stepBack();
+                    continue;
+                }
                 // remove piece from possible solution to prevent same piece twice on board
+                // todo extract to method or add flag to PuzzlePiece isOnBoard
                 while(!poolOfPieces.contains(possiblePiecesForSlot.get(0))){
                     possiblePiecesForSlot.remove(possiblePiecesForSlot.get(0));
+                    if(possiblePiecesForSlot.isEmpty()){
+                        break;
+                    }
                 }
 
                 if (possiblePiecesForSlot.size() > 0) {
                     PuzzlePiece pieceToBePlaced = possiblePiecesForSlot.get(0);
-                    if(currentBoard[row][col] != null){
-                        poolOfPieces.add(currentBoard[row][col]);
-                        System.out.println(currentBoard[row][col] + " removed");
-                    }
+                    returnPieceToPool();
                     currentBoard[row][col] = pieceToBePlaced;
                     System.out.println(pieceToBePlaced + " added");
+                    // todo extract to method
                     poolOfPieces.remove(pieceToBePlaced);
                     possiblePiecesForSlot.remove(pieceToBePlaced);
-                    row = stepForwardRow(row, col);
-                    col = stepForwardColumn(row, col);
+                    stepForwardRow();
+                    stepForwardColumn();
                 } else {
-                    slotToPieces.remove(slotKey, possiblePiecesForSlot);
-                    currentBoard[row][col] = null;
-                    row = stepBackRow(row, col);
-                    col = stepBackColumn(row, col);
+                    prepareStepBack(slotKey, possiblePiecesForSlot);
+                    stepBack();
                 }
             }
             if(isSolved){
@@ -94,35 +100,54 @@ public class Solver {
         }
     }
 
-    private int stepBackColumn(int row, int col) {
-        if(col - 1 < 0){
-            return currentBoard.length - 1;
-        }
-        return col -1;
+    private void prepareStepBack(String slotKey, List<PuzzlePiece> possiblePiecesForSlot) {
+        slotToPieces.remove(slotKey, possiblePiecesForSlot);
+        returnPieceToPool();
+        currentBoard[row][col] = null;
     }
 
-    private int stepBackRow(int row, int col) {
-        if(col - 1 < 0){
-            return row - 1;
-        }
-        return row;
+    private void stepBack() {
+        stepBackRow();
+        stepBackColumn();
     }
 
-    private int stepForwardColumn(int row, int col) {
-        if(col + 1 == currentBoard[0].length){
-            return 0;
+    private void returnPieceToPool() {
+        if(currentBoard[row][col] != null){
+            poolOfPieces.add(currentBoard[row][col]);
+            System.out.println(currentBoard[row][col] + " returned to poolOfPieces");
         }
-        return col + 1;
     }
 
-    private int stepForwardRow(int row, int col) {
-        if(col + 1 == currentBoard[0].length){
-            return row + 1;
+    private void stepBackColumn() {
+        if(col == 0){
+            col = currentBoard[0].length - 1;
+        } else {
+            col--;
         }
-        return row;
+
     }
 
-    private List<PuzzlePiece> piecesForSlot(int row, int col) {
+    private void stepBackRow() {
+        if(col == 0){
+            row--;
+        }
+    }
+
+    private void stepForwardColumn() {
+        if(col == currentBoard[0].length - 1){
+            col = 0;
+        } else {
+            col++;
+        }
+    }
+
+    private void stepForwardRow() {
+        if(col == currentBoard[0].length - 1){
+            row++;
+        }
+    }
+
+    private List<PuzzlePiece> piecesForSlot() {
         List<PuzzlePiece> ret = new ArrayList<>();
         int sideLeft, sideTop, sideRight, sideBottom;
         if( row == 0 && col == 0 && currentBoard[row][col] == null){
@@ -131,10 +156,11 @@ public class Solver {
             sideRight = 2;
             sideBottom = 2;
         } else {
-            sideLeft = getRightSideFromFromLeftPiece(row, col)*(-1);
-            sideTop = getBottomSideFromUpPiece(row, col) *(-1);
-            sideRight = getLeftSideFromRightPice(row, col) ; // should be 0 or 2
-            sideBottom = getTopSideFromDownPiece(row, col) ; // should be 0 or 2
+            // todo fake piece object, add compare to PuzzlePiec
+            sideLeft = getRightSideFromLeftPiece()*(-1);
+            sideTop = getBottomSideFromUpPiece() *(-1);
+            sideRight = getLeftSideFromRightPice() ; // should be 0 or 2
+            sideBottom = getTopSideFromDownPiece() ; // should be 0 or 2
 
         }
 
@@ -146,7 +172,7 @@ public class Solver {
         return ret;
     }
 
-    private int getTopSideFromDownPiece(int row, int col) {
+    private int getTopSideFromDownPiece() {
         if ( row == currentBoard.length - 1){
             return 0;
         } else {
@@ -154,7 +180,7 @@ public class Solver {
         }
     }
 
-    private int getLeftSideFromRightPice(int row, int col) {
+    private int getLeftSideFromRightPice() {
         if (col == currentBoard[0].length - 1){
             return 0;
         } else {
@@ -162,7 +188,7 @@ public class Solver {
         }
     }
 
-    private int getBottomSideFromUpPiece(int row, int col) {
+    private int getBottomSideFromUpPiece() {
         if( row == 0){
             return 0;
         } else {
@@ -170,14 +196,12 @@ public class Solver {
         }
     }
 
-    private int getRightSideFromFromLeftPiece(int row, int col){
+    private int getRightSideFromLeftPiece(){
         if( col == 0){
             return 0;
-        } else {
-            int backRow = stepBackRow(row, col);
-            int backColumn = stepBackColumn(row, col);
-            return currentBoard[backRow][backColumn].getSideRight();
         }
+        return currentBoard[row][col - 1].getSideRight();
+
     }
 
 
@@ -209,22 +233,5 @@ public class Solver {
     public List<PuzzlePiece> getPoolOfPieces() {
         return poolOfPieces;
     }
-
-    public static void main(String[] args) {
-        PuzzlePiece p1 = new PuzzlePiece(0, 1, 0, 0, 1);
-        PuzzlePiece p2 = new PuzzlePiece(-1, 0, 0, 0, 2);
-        PuzzlePiece p3 = new PuzzlePiece(0, 1, 0, 0, 3);
-        PuzzlePiece p4 = new PuzzlePiece(-1, 0, 0, 0, 4);
-        List<PuzzlePiece> pieces = new ArrayList<>();
-        pieces.add(p1);
-        pieces.add(p2);
-        pieces.add(p3);
-        pieces.add(p4);
-        PuzzleBox puzzleBox = new PuzzleBox(pieces);
-        Solver solver = new Solver(puzzleBox);
-        solver.createPossibleBoards();
-        solver.solvePuzzle();
-    }
-
 
 }
