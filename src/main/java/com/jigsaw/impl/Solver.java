@@ -47,6 +47,7 @@ public class Solver {
             row = 0;
             col = 0;
             currentBoard = board;
+            System.out.println(String.format("Starting to check board %s X %s",currentBoard.length, currentBoard[0].length));
             while(true){
                 if (row < 0){
                     break;
@@ -80,7 +81,6 @@ public class Solver {
                     returnPieceToPool();
                     currentBoard[row][col] = pieceToBePlaced;
                     System.out.println(pieceToBePlaced + " added");
-                    // todo extract to method
                     poolOfPieces.remove(pieceToBePlaced);
                     possiblePiecesForSlot.remove(pieceToBePlaced);
                     stepForwardRow();
@@ -91,8 +91,10 @@ public class Solver {
                 }
             }
             if(isSolved){
-                System.out.println("Puzzle solved : " + currentBoard.toString());
+                System.out.println(String.format("Puzzle solved for board %s X %s",currentBoard.length, currentBoard[0].length));
                 break;
+            } else {
+                System.out.println(String.format("Can't find solution for board %s X %s",currentBoard.length, currentBoard[0].length));
             }
         }
         if(!isSolved){
@@ -204,7 +206,7 @@ public class Solver {
 
     }
 
-
+    // todo fake piece object, add compare to PuzzlePiec
     private boolean isPieceFit(PuzzlePiece piece, int sideLeft, int sideTop, int sideRight, int sideBottom) {
         boolean[] sideStatus = new boolean[4];
         if(sideLeft >= 2){
@@ -234,4 +236,7 @@ public class Solver {
         return poolOfPieces;
     }
 
+    public PuzzlePiece[][] getCurrentBoard() {
+        return currentBoard;
+    }
 }
