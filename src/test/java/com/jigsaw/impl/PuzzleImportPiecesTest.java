@@ -153,7 +153,8 @@ class PuzzleImportPiecesTest {
     @Test
     @DisplayName("Is pieces imported")
     void test() throws IOException {
-        List<PuzzlePiece> actualPuzzle = PuzzleImportPieces.getPuzzlePieces();
+        FileManager fileManager = new FileManager();
+        List<PuzzlePiece> actualPuzzle = fileManager.getPuzzlePieces();
         PuzzlePiece p1 = new PuzzlePiece(-1, 0, 1,1, 1);
         PuzzlePiece p2 = new PuzzlePiece(0, 1, 0 , -1, 2);
         PuzzlePiece p3 = new PuzzlePiece(0, 0, 1, -1, 3);
