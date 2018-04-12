@@ -25,7 +25,11 @@ public class Solver {
         this.poolOfPieces.addAll(puzzleBox.getAllPiecesInBoard());
     }
 
-    private void createPossibleBoards(){
+    public PuzzleBox getPuzzleBox() {
+        return puzzleBox;
+    }
+
+    public void createPossibleBoards(){
         int numOfPieces = puzzleBox.getAllPiecesInBoard().size();
         for( int i = numOfPieces/2; i >= 2; i--){
             if(numOfPieces % i == 0){
@@ -41,7 +45,6 @@ public class Solver {
             int row = 0;
             int col = 0;
             currentBoard = board;
-            String slotKey = Integer.toString(row) + Integer.toString(col);
             while(true){
                 if (row < 0){
                     boards.remove(board);
@@ -51,6 +54,7 @@ public class Solver {
                     isSolved = true;
                     break;
                 }
+                String slotKey = Integer.toString(row) + Integer.toString(col);
                 if (!slotToPieces.containsKey(slotKey)) {
                     slotToPieces.put(slotKey, piecesForSlot(row, col));
                 }
@@ -63,7 +67,12 @@ public class Solver {
 
                 if (possiblePiecesForSlot.size() > 0) {
                     PuzzlePiece pieceToBePlaced = possiblePiecesForSlot.get(0);
+                    if(currentBoard[row][col] != null){
+                        poolOfPieces.add(currentBoard[row][col]);
+                        System.out.println(currentBoard[row][col] + " removed");
+                    }
                     currentBoard[row][col] = pieceToBePlaced;
+                    System.out.println(pieceToBePlaced + " added");
                     poolOfPieces.remove(pieceToBePlaced);
                     possiblePiecesForSlot.remove(pieceToBePlaced);
                     row = stepForwardRow(row, col);
@@ -77,7 +86,11 @@ public class Solver {
             }
             if(isSolved){
                 System.out.println("Puzzle solved : " + currentBoard.toString());
+                break;
             }
+        }
+        if(!isSolved){
+            System.out.println("No solution found for given pieces");
         }
     }
 
@@ -118,13 +131,11 @@ public class Solver {
             sideRight = 2;
             sideBottom = 2;
         } else {
-            int backRow = stepBackRow(row, col);
-            int backColumn = stepBackColumn(row, col);
-            PuzzlePiece oneStepBackPiece = currentBoard[backRow][backColumn];
-            sideLeft = oneStepBackPiece.getSideLeft();
-            sideTop = oneStepBackPiece.getSideTop();
-            sideRight = oneStepBackPiece.getSideRight();
-            sideBottom = oneStepBackPiece.getSideBottom();
+            sideLeft = getRightSideFromFromLeftPiece(row, col)*(-1);
+            sideTop = getBottomSideFromUpPiece(row, col) *(-1);
+            sideRight = getLeftSideFromRightPice(row, col) ; // should be 0 or 2
+            sideBottom = getTopSideFromDownPiece(row, col) ; // should be 0 or 2
+
         }
 
         for(PuzzlePiece piece: poolOfPieces){
@@ -133,6 +144,40 @@ public class Solver {
             }
         }
         return ret;
+    }
+
+    private int getTopSideFromDownPiece(int row, int col) {
+        if ( row == currentBoard.length - 1){
+            return 0;
+        } else {
+            return 2;
+        }
+    }
+
+    private int getLeftSideFromRightPice(int row, int col) {
+        if (col == currentBoard[0].length - 1){
+            return 0;
+        } else {
+            return 2;
+        }
+    }
+
+    private int getBottomSideFromUpPiece(int row, int col) {
+        if( row == 0){
+            return 0;
+        } else {
+            return currentBoard[row-1][col].getSideBottom();
+        }
+    }
+
+    private int getRightSideFromFromLeftPiece(int row, int col){
+        if( col == 0){
+            return 0;
+        } else {
+            int backRow = stepBackRow(row, col);
+            int backColumn = stepBackColumn(row, col);
+            return currentBoard[backRow][backColumn].getSideRight();
+        }
     }
 
 
@@ -161,11 +206,15 @@ public class Solver {
         return sideStatus[0] && sideStatus[1] && sideStatus[2] && sideStatus[3];
     }
 
+    public List<PuzzlePiece> getPoolOfPieces() {
+        return poolOfPieces;
+    }
+
     public static void main(String[] args) {
         PuzzlePiece p1 = new PuzzlePiece(0, 1, 0, 0, 1);
         PuzzlePiece p2 = new PuzzlePiece(-1, 0, 0, 0, 2);
         PuzzlePiece p3 = new PuzzlePiece(0, 1, 0, 0, 3);
-        PuzzlePiece p4 = new PuzzlePiece(-1, 1, 0, 0, 4);
+        PuzzlePiece p4 = new PuzzlePiece(-1, 0, 0, 0, 4);
         List<PuzzlePiece> pieces = new ArrayList<>();
         pieces.add(p1);
         pieces.add(p2);

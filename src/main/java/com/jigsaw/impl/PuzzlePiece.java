@@ -91,8 +91,23 @@ public class PuzzlePiece {
     }
 
     public boolean isBottomRightCorner() {
-        return this.sideRight == 0 && this.sideTop == 0;
+        return this.sideBottom == 0 && this.sideRight == 0;
     }
+
+    public boolean isTopLeftCorner() {
+        return this.sideTop == 0 && this.sideLeft == 0;
+    }
+
+    public boolean isBottomLeftCorner() {
+        return this.sideBottom == 0 && this.sideLeft == 0;
+    }
+
+    public boolean isPieceACorner() { return isTopRightCorner()||isBottomRightCorner()||isTopLeftCorner()||isBottomLeftCorner(); }
+
+    public boolean isPieceASquare() { return getSumOfAllSides()==0; }
+
+
+
 
     @Override
     public String toString() {

@@ -3,10 +3,12 @@ package com.jigsaw.impl;
 
 /**
  *
- *  Author:
+ *  Author: Idan Agam
  *  Date:   06/04/2018
  */
 
+
+import javafx.scene.control.cell.CheckBoxListCell;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -25,8 +27,7 @@ public class PuzzleBox {
         straightRightLeftPieces = getStraightPiecesGroup();
         maleRightLeftPieces = getMalePiecesGroup();
         femaleRightLeftPieces = getFemalePiecesGroup();
-
-
+        numOfPieces=pieces.size();
     }
 
     public int getNumOfPieces() {
@@ -83,6 +84,26 @@ public class PuzzleBox {
     public List<PuzzlePiece> getAllPiecesInBoard() {
         return allPiecesInBoard;
     }
+
+    //Make sure the puzzle is solvable
+    private boolean validateThereAreAtLeast2CornersOnPuzzleBox(){
+        int cornersCount=0;
+        for (PuzzlePiece piece :allPiecesInBoard) {
+            if (piece.isPieceACorner()){
+                cornersCount++;
+            }
+        }
+        return cornersCount>2;
+    }
+    //Checking number of pieces in board, etc..
+    private boolean isPuzzleSolvable(){
+        if (numOfPieces==1){
+            return allPiecesInBoard.get(0).isPieceASquare();
+        }
+        if ((numOfPieces==0)){return false;}
+
+        return validateThereAreAtLeast2CornersOnPuzzleBox();
+        }
 }
 
 
