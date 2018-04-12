@@ -31,7 +31,6 @@ public class FileManager {
         this.exportPuzzleFilePath = outputFile.getAbsolutePath();
         this.importAbsPath = Paths.get(this.importPuzzleFilePath);
         this.exportAbsPath = Paths.get(this.exportPuzzleFilePath);
-        clearResultFile();
     }
 
     // getters
@@ -45,6 +44,7 @@ public class FileManager {
 
     // class methods
     public BufferedReader openFile(String fileName) {
+        clearResultFile(); /* clear the output result file */
         BufferedReader reader = null;
         try {
             if (fileName.equalsIgnoreCase(this.importPuzzleFileName)) {
@@ -86,6 +86,14 @@ public class FileManager {
             reader.close();
         } catch (IOException e) {
             e.printStackTrace();
+        }
+    }
+
+    public void printPuzzleResult(PuzzlePiece[][] puzzlePiece) {
+        for (int i = 0; i < puzzlePiece.length; i++) {
+            for (int j = 0; j < puzzlePiece[i].length; j++) {
+                printToFile(puzzlePiece[i][j].toString());
+            }
         }
     }
 }
