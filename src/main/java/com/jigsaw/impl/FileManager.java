@@ -6,6 +6,9 @@ import java.io.File;
 import java.io.IOException;
 import java.nio.charset.Charset;
 import java.nio.file.*;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
 
 public class FileManager {
 
@@ -95,5 +98,29 @@ public class FileManager {
                 printToFile(puzzlePiece[i][j].toString());
             }
         }
+    }
+
+    public List<String[]> getPieceDetailList() throws IOException {
+        BufferedReader reader = openFile(this.importPuzzleFileName);
+        String currentLine = null;
+        List<String[]> pieceDataList = new ArrayList<>();
+        while ((currentLine = reader.readLine()) != null) {
+            if (currentLine.contains("NumElements")) {
+                continue;
+            }
+            pieceDataList.add(currentLine.split(" "));
+        }
+        return pieceDataList;
+    }
+
+    public List<PuzzlePiece> getPuzzlePieces() throws IOException {
+        List<String[]> elementsDetailsList = getPieceDetailList();
+        List<PuzzlePiece> puzzlePieceList = new ArrayList<>();
+        for (String[] element : elementsDetailsList) {
+            int[] elementDetailsArray = Arrays.stream(element).mapToInt(Integer::parseInt).toArray();
+            PuzzlePiece puzzlePiece = new PuzzlePiece(elementDetailsArray[1], elementDetailsArray[2], elementDetailsArray[3], elementDetailsArray[4], elementDetailsArray[0]);
+            puzzlePieceList.add(puzzlePiece);
+        }
+        return puzzlePieceList;
     }
 }
