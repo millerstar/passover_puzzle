@@ -1,13 +1,11 @@
 package com.jigsaw.impl;
 
 import java.io.BufferedReader;
+import java.io.BufferedWriter;
 import java.io.File;
 import java.io.IOException;
 import java.nio.charset.Charset;
-import java.nio.file.Files;
-import java.nio.file.InvalidPathException;
-import java.nio.file.Path;
-import java.nio.file.Paths;
+import java.nio.file.*;
 
 public class FileManager {
 
@@ -33,6 +31,7 @@ public class FileManager {
         this.exportPuzzleFilePath = outputFile.getAbsolutePath();
         this.importAbsPath = Paths.get(this.importPuzzleFilePath);
         this.exportAbsPath = Paths.get(this.exportPuzzleFilePath);
+        clearResultFile();
     }
 
     // getters
@@ -62,6 +61,26 @@ public class FileManager {
         return reader;
     }
 
+    public void printToFile(String outputString) {
+        BufferedWriter writer = null;
+        try {
+            writer = Files.newBufferedWriter(this.exportAbsPath, Charset.forName("UTF-8"), StandardOpenOption.APPEND);
+            writer.write(outputString);
+            writer.newLine();
+            writer.close();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+    public void clearResultFile() {
+        try {
+            Files.newBufferedWriter(this.exportAbsPath, StandardOpenOption.TRUNCATE_EXISTING);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
     public void closeFile(BufferedReader reader) {
         try {
             reader.close();
@@ -69,6 +88,4 @@ public class FileManager {
             e.printStackTrace();
         }
     }
-
-
 }
