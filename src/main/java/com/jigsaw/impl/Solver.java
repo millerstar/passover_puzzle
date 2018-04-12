@@ -21,10 +21,12 @@ public class Solver {
     private Map<String, List<PuzzlePiece>> slotToPieces= new HashMap<>();
     private int row;
     private int col;
+    FileManager fileManager;
 
     public Solver(PuzzleBox puzzleBox) {
         this.puzzleBox = puzzleBox;
         this.poolOfPieces.addAll(puzzleBox.getAllPiecesInBoard());
+        fileManager = new FileManager();
     }
 
     public PuzzleBox getPuzzleBox() {
@@ -91,13 +93,16 @@ public class Solver {
                 }
             }
             if(isSolved){
+                fileManager.printToFile(String.format("Puzzle solved for board %s X %s",currentBoard.length, currentBoard[0].length));
                 System.out.println(String.format("Puzzle solved for board %s X %s",currentBoard.length, currentBoard[0].length));
                 break;
             } else {
+                fileManager.printToFile(String.format("Can't find solution for board %s X %s",currentBoard.length, currentBoard[0].length));
                 System.out.println(String.format("Can't find solution for board %s X %s",currentBoard.length, currentBoard[0].length));
             }
         }
         if(!isSolved){
+            fileManager.printToFile("No solution found for given pieces");
             System.out.println("No solution found for given pieces");
         }
     }
