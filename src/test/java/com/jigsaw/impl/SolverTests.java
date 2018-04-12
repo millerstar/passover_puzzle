@@ -67,5 +67,42 @@ public class SolverTests {
         assertTrue(solver.getPoolOfPieces().size() == solver.getPuzzleBox().getAllPiecesInBoard().size());
     }
 
+    @Test
+    public void positiveValidatePuzzleSolutionTest(){
+        PuzzlePiece p1 = new PuzzlePiece(0, 1, 0, 0, 1);
+        PuzzlePiece p2 = new PuzzlePiece(-1, 0, 0, 0, 2);
+        PuzzlePiece p3 = new PuzzlePiece(0, 1, 0, 0, 3);
+        PuzzlePiece p4 = new PuzzlePiece(-1, 0, 0, 0, 4);
+        List<PuzzlePiece> pieces = new ArrayList<>();
+        pieces.add(p1);
+        pieces.add(p2);
+        pieces.add(p3);
+        pieces.add(p4);
+        PuzzleBox puzzleBox = new PuzzleBox(pieces);
+        Solver solver = new Solver(puzzleBox);
+        solver.createPossibleBoards();
+        solver.solvePuzzle();
+        assertTrue(solver.validatePuzzleSolution());
+    }
+
+    @Test
+    public void negativeValidatePuzzleSolutionTest(){
+        PuzzlePiece p1 = new PuzzlePiece(0, 1, 0, 0, 1);
+        PuzzlePiece p2 = new PuzzlePiece(-1, 0, 0, 0, 2);
+        PuzzlePiece p3 = new PuzzlePiece(0, 1, 0, 0, 3);
+        PuzzlePiece p4 = new PuzzlePiece(-1, 0, 0, 0, 4);
+        List<PuzzlePiece> pieces = new ArrayList<>();
+        pieces.add(p1);
+        pieces.add(p2);
+        pieces.add(p3);
+        pieces.add(p4);
+        PuzzleBox puzzleBox = new PuzzleBox(pieces);
+        Solver solver = new Solver(puzzleBox);
+        solver.createPossibleBoards();
+        solver.solvePuzzle();
+        solver.getCurrentBoard()[0][0] = p4;
+        assertFalse(solver.validatePuzzleSolution());
+    }
+
 
 }

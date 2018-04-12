@@ -21,12 +21,10 @@ public class Solver {
     private Map<String, List<PuzzlePiece>> slotToPieces= new HashMap<>();
     private int row;
     private int col;
-    FileManager fileManager;
 
     public Solver(PuzzleBox puzzleBox) {
         this.puzzleBox = puzzleBox;
         this.poolOfPieces.addAll(puzzleBox.getAllPiecesInBoard());
-        fileManager = new FileManager();
     }
 
     public PuzzleBox getPuzzleBox() {
@@ -93,16 +91,15 @@ public class Solver {
                 }
             }
             if(isSolved){
-                fileManager.printToFile(String.format("Puzzle solved for board %s X %s",currentBoard.length, currentBoard[0].length));
                 System.out.println(String.format("Puzzle solved for board %s X %s",currentBoard.length, currentBoard[0].length));
                 break;
             } else {
-                fileManager.printToFile(String.format("Can't find solution for board %s X %s",currentBoard.length, currentBoard[0].length));
                 System.out.println(String.format("Can't find solution for board %s X %s",currentBoard.length, currentBoard[0].length));
+                //TODO send error to aggregator
             }
         }
         if(!isSolved){
-            fileManager.printToFile("No solution found for given pieces");
+            //TODO send error to aggregator
             System.out.println("No solution found for given pieces");
         }
     }
@@ -235,6 +232,43 @@ public class Solver {
             sideStatus[3] = sideBottom == piece.getSideBottom();
         }
         return sideStatus[0] && sideStatus[1] && sideStatus[2] && sideStatus[3];
+    }
+
+    public boolean validatePuzzleSolution(){
+        int sumOfSides = 0;
+        // validate rows
+        for(int row = 0; row < currentBoard.length; row++){
+            for(int col = 0; col < currentBoard[0].length; col++){
+                PuzzlePiece currPiece = currentBoard[row][col];
+                if(currPiece != null){
+                    sumOfSides += currPiece.getSideRight() + currPiece.getSideLeft();
+                } else {
+                    // TODO error to aggregator
+                    return false;
+                }
+            }
+            if(sumOfSides != 0){
+                //TODO error to aggregator
+                return false;
+            }
+        }
+        // validate columns
+        for(int col = 0; col < currentBoard[0].length; col++){
+            for(int row = 0; row < currentBoard.length; row++){
+                PuzzlePiece currPiece = currentBoard[row][col];
+                if(currPiece != null){
+                    sumOfSides += currPiece.getSideTop() + currPiece.getSideBottom();
+                } else {
+                    // TODO error to aggregator
+                    return false;
+                }
+            }
+            if(sumOfSides != 0){
+                //TODO error to aggregator
+                return false;
+            }
+        }
+        return true;
     }
 
     public List<PuzzlePiece> getPoolOfPieces() {
