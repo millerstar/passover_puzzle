@@ -1,6 +1,5 @@
 package com.jigsaw.impl;
 
-
 /**
  *  Author: Idan Agam
  *  Date:   01/04/2018
@@ -9,8 +8,9 @@ package com.jigsaw.impl;
 public class PuzzlePieceValidator {
 
     //Private class members
-    PuzzlePiece piece;
+    private PuzzlePiece piece;
 
+    //public methods
     public boolean isValidPiece(PuzzlePiece pieceToValidate){
         int size;
         size =  pieceToValidate.getPieceCoordinates().length;
