@@ -14,4 +14,12 @@ public class MessageAccumulator {
         massages.add(strToAdd);
         return massages;
     }
+
+    public boolean areThereAMassagesToRead(){
+        return massage.length()==0;
+    }
+
+    public List<String> getMassages(){
+        return massages;
+    }
 }
