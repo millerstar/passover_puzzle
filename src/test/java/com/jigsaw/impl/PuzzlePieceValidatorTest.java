@@ -14,8 +14,9 @@ public class PuzzlePieceValidatorTest {
     public void isValidPiece() {
         PuzzlePiece validPiece = new PuzzlePiece(1,1,1,1,1);
         PuzzlePieceValidator p = new PuzzlePieceValidator();
-        p.
-        assertTrue(p.isValidPiece(validPiece));
+        assertTrue(p.isPieceNotNull(validPiece));
+       // assertTrue(p.isValidPiece(validPiece));
+
     }
 
     @Test
@@ -25,13 +26,5 @@ public class PuzzlePieceValidatorTest {
         assertTrue(pieceToValidate!=null);
     }
 
-    @Test
-    @DisplayName("When given not valid piece")
-    public void BadisValidPiece() {
-        PuzzlePiece unValidPiece = new PuzzlePiece(1,1,1,1,-1);
-        PuzzlePieceValidator p = new PuzzlePieceValidator();
-
-        assertFalse(p.isValidPiece(unValidPiece));
-    }
 }
 
