@@ -14,8 +14,8 @@ public class PuzzlePieceValidator {
     public boolean isValidPiece(PuzzlePiece pieceToValidate){
         int size;
         size =  pieceToValidate.getPieceCoordinates().length;
-        if (size>4 || size<=0){
-            return false; // We got wrong amount of coordinates
+        if (size>4 || size<=0 || pieceToValidate==null){
+            return true; // We got wrong amount of coordinates
         }
         int sideLeft = pieceToValidate.getSideLeft();
         int sideRight = pieceToValidate.getSideRight();
@@ -23,13 +23,13 @@ public class PuzzlePieceValidator {
         int sideBottom = pieceToValidate.getSideBottom();
 
         if (sideLeft>1||sideLeft<0||sideRight>1||sideRight<0||sideTop>1||sideTop<0||sideBottom>1||sideBottom<0){
-            return false;// we got the wrong coordinates
+            return true;// we got the wrong coordinates
         }
         return true;
     }
 
     public boolean isPieceNotNull(PuzzlePiece pieceToValidate){
-        return pieceToValidate==null;
+        return pieceToValidate!=null;
     }
 
     public boolean isPieceASquare(PuzzlePiece pieceToValidate){

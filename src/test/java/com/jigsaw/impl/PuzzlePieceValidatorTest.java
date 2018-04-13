@@ -14,15 +14,15 @@ public class PuzzlePieceValidatorTest {
     public void isValidPiece() {
         PuzzlePiece validPiece = new PuzzlePiece(1,1,1,1,1);
         PuzzlePieceValidator p = new PuzzlePieceValidator();
-
+        p.
         assertTrue(p.isValidPiece(validPiece));
     }
 
-
     @Test
     @DisplayName("test is piece is null")
-    public boolean isPieceNotNull(PuzzlePiece pieceToValidate) {
-        return pieceToValidate==null;
+    public void isPieceNotNull() {
+        PuzzlePiece pieceToValidate = new PuzzlePiece (1,1,1,1,1);
+        assertTrue(pieceToValidate!=null);
     }
 
     @Test
