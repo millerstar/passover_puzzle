@@ -93,11 +93,17 @@ public class FileManager {
     }
 
     public void printPuzzleResult(PuzzlePiece[][] puzzlePiece) {
-        for (int i = 0; i < puzzlePiece.length; i++) {
-            for (int j = 0; j < puzzlePiece[i].length; j++) {
-                printToFile(puzzlePiece[i][j].toString());
+        if (puzzlePiece != null) {
+            for (int i = 0; i < puzzlePiece.length; i++) {
+                for (int j = 0; j < puzzlePiece[i].length; j++) {
+                    printToFile(puzzlePiece[i][j].toString());
+                }
             }
+        } else {
+            // TODO: 4/13/2018  pull errors from aggregator and write to file
+            printToFile("No valid solution was found for the puzzle");
         }
+
     }
 
     public List<String[]> getPieceDetailList() throws IOException {
