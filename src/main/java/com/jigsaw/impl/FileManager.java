@@ -69,7 +69,7 @@ public class FileManager {
         try {
             writer = Files.newBufferedWriter(this.exportAbsPath, Charset.forName("UTF-8"), StandardOpenOption.APPEND);
             writer.write(outputString);
-            writer.newLine();
+//            writer.newLine();
             writer.close();
         } catch (IOException e) {
             e.printStackTrace();
@@ -96,8 +96,9 @@ public class FileManager {
         if (puzzlePiece != null) {
             for (int i = 0; i < puzzlePiece.length; i++) {
                 for (int j = 0; j < puzzlePiece[i].length; j++) {
-                    printToFile(puzzlePiece[i][j].toString());
+                    printToFile(puzzlePiece[i][j].getPieceID() + " ");
                 }
+                printToFile("\n");
             }
         } else {
             // TODO: 4/13/2018  pull errors from aggregator and write to file

@@ -5,11 +5,11 @@ import java.io.IOException;
 public class PuzzleManager {
 
     public void findSolutionToPuzzle() throws IOException {
-        PuzzleBox puzzleBox = new PuzzleBox(PuzzleImportPieces.getPuzzlePieces());
+        FileManager fileManager = new FileManager();
+        PuzzleBox puzzleBox = new PuzzleBox(fileManager.getPuzzlePieces());
         Solver solver = new Solver(puzzleBox);
         solver.createPossibleBoards();
         solver.solvePuzzle();
-        FileManager fileManager = new FileManager();
         fileManager.printPuzzleResult(solver.getCurrentBoard());
     }
 

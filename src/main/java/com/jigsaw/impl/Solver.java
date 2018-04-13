@@ -276,6 +276,9 @@ public class Solver {
     }
 
     public PuzzlePiece[][] getCurrentBoard() {
+        if (currentBoard == null || currentBoard[0][0] == null){
+            return null;
+        }
         return currentBoard;
     }
 }
