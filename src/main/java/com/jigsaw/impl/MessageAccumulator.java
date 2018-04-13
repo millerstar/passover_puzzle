@@ -10,9 +10,8 @@ public class MessageAccumulator {
     List<String> massages = new ArrayList<>();
 
     //Public methods:
-    public List<String> addMassage (String strToAdd){
+    public void addMassage (String strToAdd){
         massages.add(strToAdd);
-        return massages;
     }
 
     public boolean areThereAMassagesToRead(){
