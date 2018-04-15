@@ -5,10 +5,8 @@ package com.jigsaw.impl;
  *
  *  Author: Idan Agam
  *  Date:   06/04/2018
+ *   Fixed on date: 15/04/2018   ([27])
  */
-
-
-//import javafx.scene.control.cell.CheckBoxListCell;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -75,10 +73,7 @@ public class PuzzleBox {
         for (PuzzlePiece puzzleElement : allPiecesInBoard) {
             sum = puzzleElement.getSumOfAllSides();
         }
-        if (sum != 0) {
-            return false;
-        }
-        return true;
+      return sum==0;
     }
 
     public List<PuzzlePiece> getAllPiecesInBoard() {
