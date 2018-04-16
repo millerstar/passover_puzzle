@@ -5,15 +5,26 @@ import java.util.Objects;
 
 /**
  *
- *  Author: Idan Agam
- *  Date:   01/04/2018
+ *  Author:     Idan Agam
+ *  Date:       01/04/2018
+ *  Modified:   16/04/2018
  */
 
 public class PuzzlePiece {
 
     private int sideLeft, sideRight, sideTop, sideBottom;
-    private int[] pieceCoordinates;
     private int pieceID;
+
+    public boolean isIdPieceOnTheBoard() {
+        return idPieceOnTheBoard;
+    }
+
+    public void setIdPieceOnTheBoard(boolean idPieceOnTheBoard) {
+        this.idPieceOnTheBoard = idPieceOnTheBoard;
+    }
+
+    private boolean idPieceOnTheBoard;
+//TODO: is piece on the board and where - return coordinates
 
     public PuzzlePiece(int sideLeft, int sideRight, int sideTop, int sideBottom, int pieceID) {
         this.sideLeft = sideLeft;
@@ -26,7 +37,7 @@ public class PuzzlePiece {
     @Override
     public int hashCode() {
         int result = Objects.hash(sideLeft, sideRight, sideTop, sideBottom);
-        return 31 * result + Arrays.hashCode(pieceCoordinates);
+        return 31 * result + Arrays.hashCode(new int[]{pieceID});
     }
 
     public int getSideLeft() {
@@ -67,10 +78,6 @@ public class PuzzlePiece {
 
     public void setPieceID(int pieceID) {
         this.pieceID = pieceID;
-    }
-
-    public int[] getPieceCoordinates() {
-        return pieceCoordinates;
     }
 
     public boolean isSumOfAllSidesZero() {

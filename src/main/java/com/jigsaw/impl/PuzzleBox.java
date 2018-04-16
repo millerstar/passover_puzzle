@@ -79,7 +79,7 @@ public class PuzzleBox {
     public List<PuzzlePiece> getAllPiecesInBoard() {
         return allPiecesInBoard;
     }
-
+//TODO: Add writing errors to my List<String>
     //Make sure the puzzle is solvable
     private boolean validateThereAreAtLeast2CornersOnPuzzleBox(){
         int cornersCount=0;
