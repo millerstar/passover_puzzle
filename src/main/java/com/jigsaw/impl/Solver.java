@@ -21,6 +21,16 @@ public class Solver {
     private Map<String, List<PuzzlePiece>> slotToPieces= new HashMap<>();
     private int row;
     private int col;
+    private boolean isOneRowSolutionPossible;
+    private boolean isOneColumnSolutionPossible;
+
+    public boolean isOneRowSolutionPossible() {
+        return isOneRowSolutionPossible;
+    }
+
+    public boolean isOneColumnSolutionPossible() {
+        return isOneColumnSolutionPossible;
+    }
 
     public Solver(PuzzleBox puzzleBox) {
         this.puzzleBox = puzzleBox;
@@ -33,10 +43,56 @@ public class Solver {
 
     public void createPossibleBoards(){
         int numOfPieces = puzzleBox.getAllPiecesInBoard().size();
+        oneLineSolutionsChecker();
         for( int i = numOfPieces/2; i >= 2; i--){
             if(numOfPieces % i == 0){
                 PuzzlePiece[][] board = new PuzzlePiece[i][numOfPieces/i];
                 boards.add(board);
+            }
+        }
+        if (isOneRowSolutionPossible){
+            boards.add(new PuzzlePiece[1][numOfPieces]);
+        }
+        if (isOneColumnSolutionPossible){
+            boards.add(new PuzzlePiece[numOfPieces][1]);
+        }
+    }
+
+    // check is it possible to create one row or one column solutions
+    private void oneLineSolutionsChecker() {
+        boolean hasPieceWith2RightAngelsOnLeftSide = false;
+        boolean hasPieceWith2RightAngelsOnRigthSide = false;
+        boolean hasPieceWith2RightAngelsOnTopSide = false;
+        boolean hasPieceWith2RightAngelsOnBottomSide = false;
+
+        for(PuzzlePiece piece :puzzleBox.getAllPiecesInBoard()){
+            // check for one row
+            if(piece.getSideBottom() == 0 && piece.getSideTop() == 0){
+                if(piece.getSideLeft() == 0) {
+                    hasPieceWith2RightAngelsOnLeftSide = true;
+                }
+                if (piece.getSideRight() == 0){
+                    hasPieceWith2RightAngelsOnRigthSide = true;
+                }
+            }
+            if ( hasPieceWith2RightAngelsOnLeftSide && hasPieceWith2RightAngelsOnRigthSide){
+                isOneRowSolutionPossible = true;
+            }
+            // check for one column
+            if(piece.getSideRight() == 0 && piece.getSideLeft() == 0){
+                if(piece.getSideTop() == 0) {
+                    hasPieceWith2RightAngelsOnTopSide = true;
+                }
+                if (piece.getSideBottom() == 0){
+                    hasPieceWith2RightAngelsOnBottomSide = true;
+                }
+            }
+            if(hasPieceWith2RightAngelsOnBottomSide && hasPieceWith2RightAngelsOnTopSide){
+                isOneColumnSolutionPossible = true;
+            }
+            // exit if 2 one line solutions already possible
+            if(isOneColumnSolutionPossible && isOneRowSolutionPossible){
+                break;
             }
         }
     }
@@ -157,8 +213,19 @@ public class Solver {
         if( row == 0 && col == 0 && currentBoard[row][col] == null){
             sideLeft = 0;
             sideTop = 0;
-            sideRight = 2;
-            sideBottom = 2;
+            // check for one row
+            if( currentBoard[0].length == 1) {
+                sideRight = 0;
+            } else {
+                sideRight = 2;
+            }
+            // check for one column
+            if (currentBoard.length == 1){
+                sideBottom = 0;
+            } else {
+                sideBottom = 2;
+            }
+
         } else {
             // todo fake piece object, add compare to PuzzlePiec
             sideLeft = getRightSideFromLeftPiece()*(-1);
@@ -210,28 +277,10 @@ public class Solver {
 
     // todo fake piece object, add compare to PuzzlePiec
     private boolean isPieceFit(PuzzlePiece piece, int sideLeft, int sideTop, int sideRight, int sideBottom) {
-        boolean[] sideStatus = new boolean[4];
-        if(sideLeft >= 2){
-            sideStatus[0] = true;
-        } else {
-            sideStatus[0] = sideLeft == piece.getSideLeft();
-        }
-        if(sideTop >= 2){
-            sideStatus[1] = true;
-        } else {
-            sideStatus[1] = sideTop == piece.getSideTop();
-        }
-        if(sideRight >= 2){
-            sideStatus[2] = true;
-        } else {
-            sideStatus[2] = sideRight == piece.getSideRight();
-        }
-        if(sideBottom >= 2){
-            sideStatus[3] = true;
-        } else {
-            sideStatus[3] = sideBottom == piece.getSideBottom();
-        }
-        return sideStatus[0] && sideStatus[1] && sideStatus[2] && sideStatus[3];
+        return  (sideLeft == 2 || sideLeft == piece.getSideLeft()) &&
+                (sideTop == 2 || sideTop == piece.getSideTop()) &&
+                (sideRight == 2 || sideRight == piece.getSideRight()) &&
+                (sideBottom == 2 || sideBottom == piece.getSideBottom());
     }
 
     public boolean validatePuzzleSolution(){

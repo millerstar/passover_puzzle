@@ -24,7 +24,7 @@ public class SolverTests {
         Solver solver = new Solver(puzzleBox);
         solver.createPossibleBoards();
         solver.solvePuzzle();
-        assertTrue(solver.getPoolOfPieces().isEmpty());
+        assertTrue(solver.validatePuzzleSolution());
     }
 
     @Test
@@ -46,7 +46,7 @@ public class SolverTests {
         Solver solver = new Solver(puzzleBox);
         solver.createPossibleBoards();
         solver.solvePuzzle();
-        assertTrue(solver.getPoolOfPieces().isEmpty());
+        assertTrue(solver.validatePuzzleSolution());
     }
 
     @Test
@@ -65,6 +65,7 @@ public class SolverTests {
         solver.createPossibleBoards();
         solver.solvePuzzle();
         assertTrue(solver.getPoolOfPieces().size() == solver.getPuzzleBox().getAllPiecesInBoard().size());
+        assertFalse(solver.validatePuzzleSolution());
     }
 
     @Test
@@ -104,5 +105,75 @@ public class SolverTests {
         assertFalse(solver.validatePuzzleSolution());
     }
 
+    @Test
+    public void posValidateOneRowSolutionTest(){
+        PuzzlePiece p1 = new PuzzlePiece(0, 1, 0, 0, 1);
+        PuzzlePiece p2 = new PuzzlePiece(-1, 1, 0, 0, 2);
+        PuzzlePiece p3 = new PuzzlePiece(-1, -1, 0, 0, 3);
+        PuzzlePiece p4 = new PuzzlePiece(1, 0, 0, 0, 4);
+        List<PuzzlePiece> pieces = new ArrayList<>();
+        pieces.add(p1);
+        pieces.add(p2);
+        pieces.add(p3);
+        pieces.add(p4);
+        PuzzleBox puzzleBox = new PuzzleBox(pieces);
+        Solver solver = new Solver(puzzleBox);
+        solver.createPossibleBoards();
+        solver.solvePuzzle();
+        assertTrue(solver.validatePuzzleSolution());
+    }
 
+    @Test
+    public void posOneLineSolutionsCheckerTest(){
+        PuzzlePiece p1 = new PuzzlePiece(0, 0, 0, 1, 1);
+        PuzzlePiece p2 = new PuzzlePiece(0, 0, -1, -1, 2);
+        PuzzlePiece p3 = new PuzzlePiece(0, 0, 1, 1, 3);
+        PuzzlePiece p4 = new PuzzlePiece(0, 0, -1, 0, 4);
+        List<PuzzlePiece> pieces = new ArrayList<>();
+        pieces.add(p1);
+        pieces.add(p2);
+        pieces.add(p3);
+        pieces.add(p4);
+        PuzzleBox puzzleBox = new PuzzleBox(pieces);
+        Solver solver = new Solver(puzzleBox);
+        solver.createPossibleBoards();
+        solver.solvePuzzle();
+        assertTrue(solver.validatePuzzleSolution());
+    }
+
+    @Test
+    public void posOneColumnSolutionTest(){
+        PuzzlePiece p1 = new PuzzlePiece(0, 0, 0, 0, 1);
+        PuzzlePiece p2 = new PuzzlePiece(0, 0, 0, 0, 2);
+        PuzzlePiece p3 = new PuzzlePiece(0, 0, 0, 0, 3);
+        PuzzlePiece p4 = new PuzzlePiece(0, 0, 0, 0, 4);
+        List<PuzzlePiece> pieces = new ArrayList<>();
+        pieces.add(p1);
+        pieces.add(p2);
+        pieces.add(p3);
+        pieces.add(p4);
+        PuzzleBox puzzleBox = new PuzzleBox(pieces);
+        Solver solver = new Solver(puzzleBox);
+        solver.createPossibleBoards();
+        assertTrue(solver.isOneColumnSolutionPossible());
+        assertTrue(solver.isOneRowSolutionPossible());
+    }
+
+    @Test
+    public void negativeOneLineSolution(){
+        PuzzlePiece p1 = new PuzzlePiece(0, 0, 0, 0, 1);
+        PuzzlePiece p2 = new PuzzlePiece(0, 0, 0, 0, 2);
+        PuzzlePiece p3 = new PuzzlePiece(0, 1, 0, 0, 3);
+        PuzzlePiece p4 = new PuzzlePiece(0, 0, 0, 0, 4);
+        List<PuzzlePiece> pieces = new ArrayList<>();
+        pieces.add(p1);
+        pieces.add(p2);
+        pieces.add(p3);
+        pieces.add(p4);
+        PuzzleBox puzzleBox = new PuzzleBox(pieces);
+        Solver solver = new Solver(puzzleBox);
+        solver.createPossibleBoards();
+        solver.solvePuzzle();
+        assertFalse(solver.validatePuzzleSolution());
+    }
 }
