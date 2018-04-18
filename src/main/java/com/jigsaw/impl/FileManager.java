@@ -10,7 +10,16 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-public class FileManager {
+//TODO interface
+public class FileManager { // implements IPuzzleImporter
+
+//    public interface IPuzzleImporter{
+//
+//        List<PuzzlePiece> getPuzzlePieces();
+//    }
+//
+//    static IPuzzleImporter importer = new FileManager(path, path);
+//    importer.getPuzzlePieces();
 
     // class members
     private String importPuzzleFileName;
@@ -107,6 +116,7 @@ public class FileManager {
 
     }
 
+    //TODO Remove
     public List<String[]> getPieceDetailList() throws IOException {
         BufferedReader reader = openFile(this.importPuzzleFileName);
         String currentLine = null;
