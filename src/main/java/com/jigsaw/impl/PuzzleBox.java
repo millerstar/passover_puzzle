@@ -5,7 +5,7 @@ package com.jigsaw.impl;
  *
  *  Author: Idan Agam
  *  Date:   06/04/2018
- *   Fixed on date: 15/04/2018   ([27])
+ *   Fixed on date: 15/04/2018   ([26],[27])
  */
 
 import java.util.ArrayList;
@@ -32,7 +32,7 @@ public class PuzzleBox {
         return numOfPieces;
     }
 
-    public List<PuzzlePiece> getMalePiecesGroup(){
+    private List<PuzzlePiece> getMalePiecesGroup(){
         List<PuzzlePiece> retVal = new ArrayList<PuzzlePiece>();
 
         for (PuzzlePiece piece :allPiecesInBoard) {
@@ -44,7 +44,7 @@ public class PuzzleBox {
         return retVal;
     }
 
-    public List<PuzzlePiece> getFemalePiecesGroup(){
+    private List<PuzzlePiece> getFemalePiecesGroup(){
         List<PuzzlePiece> retVal = new ArrayList<PuzzlePiece>();
 
         for (PuzzlePiece piece :allPiecesInBoard) {
@@ -56,7 +56,7 @@ public class PuzzleBox {
         return retVal;
     }
 
-    public List<PuzzlePiece> getStraightPiecesGroup(){
+    private List<PuzzlePiece> getStraightPiecesGroup(){
         List<PuzzlePiece> retVal = new ArrayList<PuzzlePiece>();
 
         for (PuzzlePiece piece :allPiecesInBoard) {
@@ -99,6 +99,16 @@ public class PuzzleBox {
 
         return validateThereAreAtLeast2CornersOnPuzzleBox();
         }
+
+    public List<PuzzlePiece> getPiecesGroupByType(int type) {
+        List<PuzzlePiece> retVal = new ArrayList<PuzzlePiece>();
+        for (PuzzlePiece piece :allPiecesInBoard) {
+            if (piece.getSideLeft()==type) {
+                retVal.add(piece);
+            }
+        }
+        return retVal;
+    }
 }
 
 
