@@ -4,3 +4,4 @@ Idan Matvey & Ilan
 Limitations for 13.4.18:
 1. No writing errors to a file
 2. Partial solution when Puzzle only one line \ one row
+3. Not all validations have been implemented yet

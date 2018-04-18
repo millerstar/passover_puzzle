@@ -5,10 +5,8 @@ package com.jigsaw.impl;
  *
  *  Author: Idan Agam
  *  Date:   06/04/2018
+ *   Fixed on date: 15/04/2018   ([26],[27])
  */
-
-
-//import javafx.scene.control.cell.CheckBoxListCell;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -34,7 +32,7 @@ public class PuzzleBox {
         return numOfPieces;
     }
 
-    public List<PuzzlePiece> getMalePiecesGroup(){
+    private List<PuzzlePiece> getMalePiecesGroup(){
         List<PuzzlePiece> retVal = new ArrayList<PuzzlePiece>();
 
         for (PuzzlePiece piece :allPiecesInBoard) {
@@ -46,7 +44,7 @@ public class PuzzleBox {
         return retVal;
     }
 
-    public List<PuzzlePiece> getFemalePiecesGroup(){
+    private List<PuzzlePiece> getFemalePiecesGroup(){
         List<PuzzlePiece> retVal = new ArrayList<PuzzlePiece>();
 
         for (PuzzlePiece piece :allPiecesInBoard) {
@@ -58,7 +56,7 @@ public class PuzzleBox {
         return retVal;
     }
 
-    public List<PuzzlePiece> getStraightPiecesGroup(){
+    private List<PuzzlePiece> getStraightPiecesGroup(){
         List<PuzzlePiece> retVal = new ArrayList<PuzzlePiece>();
 
         for (PuzzlePiece piece :allPiecesInBoard) {
@@ -75,16 +73,13 @@ public class PuzzleBox {
         for (PuzzlePiece puzzleElement : allPiecesInBoard) {
             sum = puzzleElement.getSumOfAllSides();
         }
-        if (sum != 0) {
-            return false;
-        }
-        return true;
+      return sum==0;
     }
 
     public List<PuzzlePiece> getAllPiecesInBoard() {
         return allPiecesInBoard;
     }
-
+//TODO: Add writing errors to my List<String>
     //Make sure the puzzle is solvable
     private boolean validateThereAreAtLeast2CornersOnPuzzleBox(){
         int cornersCount=0;
@@ -104,6 +99,16 @@ public class PuzzleBox {
 
         return validateThereAreAtLeast2CornersOnPuzzleBox();
         }
+
+    public List<PuzzlePiece> getPiecesGroupByType(int type) {
+        List<PuzzlePiece> retVal = new ArrayList<PuzzlePiece>();
+        for (PuzzlePiece piece :allPiecesInBoard) {
+            if (piece.getSideLeft()==type) {
+                retVal.add(piece);
+            }
+        }
+        return retVal;
+    }
 }
 
 

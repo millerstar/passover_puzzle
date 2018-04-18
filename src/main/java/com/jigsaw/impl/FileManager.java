@@ -133,9 +133,16 @@ public class FileManager { // implements IPuzzleImporter
     public List<PuzzlePiece> getPuzzlePieces() throws IOException {
         List<String[]> elementsDetailsList = getPieceDetailList();
         List<PuzzlePiece> puzzlePieceList = new ArrayList<>();
+        int sideLeft, sideTop, sideRight, sideBottom, id;
         for (String[] element : elementsDetailsList) {
             int[] elementDetailsArray = Arrays.stream(element).mapToInt(Integer::parseInt).toArray();
-            PuzzlePiece puzzlePiece = new PuzzlePiece(elementDetailsArray[1], elementDetailsArray[2], elementDetailsArray[3], elementDetailsArray[4], elementDetailsArray[0]);
+//            PuzzlePiece puzzlePiece = new PuzzlePiece(elementDetailsArray[1], elementDetailsArray[2], elementDetailsArray[3], elementDetailsArray[4], elementDetailsArray[0]);
+            id = elementDetailsArray[0];
+            sideLeft = elementDetailsArray[1];
+            sideTop = elementDetailsArray[2];
+            sideRight = elementDetailsArray[3];
+            sideBottom = elementDetailsArray[4];
+            PuzzlePiece puzzlePiece = new PuzzlePiece(sideLeft, sideRight, sideTop, sideBottom, id);
             puzzlePieceList.add(puzzlePiece);
         }
         return puzzlePieceList;

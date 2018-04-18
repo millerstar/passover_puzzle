@@ -13,9 +13,9 @@ public class PuzzlePieceValidator {
     //public methods
     public boolean isValidPiece(PuzzlePiece pieceToValidate){
         int size;
-        size =  pieceToValidate.getPieceCoordinates().length;
-        if (size>4 || size<=0 || pieceToValidate==null){
-            return true; // We got wrong amount of coordinates
+        size =  pieceToValidate.getSumOfAllSides();
+        if (size>4 || size<0 || pieceToValidate==null){
+            return false;
         }
         int sideLeft = pieceToValidate.getSideLeft();
         int sideRight = pieceToValidate.getSideRight();
