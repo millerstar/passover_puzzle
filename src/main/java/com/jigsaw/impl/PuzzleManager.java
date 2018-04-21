@@ -10,7 +10,7 @@ public class PuzzleManager {
         Solver solver = new Solver(puzzleBox);
         solver.createPossibleBoards();
         solver.solvePuzzle();
-        fileManager.printPuzzleResult(solver.getCurrentBoard());
+        fileManager.printPuzzleResult(solver);
     }
 
     public static void main(String[] args) throws IOException {

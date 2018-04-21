@@ -7,5 +7,5 @@ public interface IPuzzleDataIO {
 
     List<PuzzlePiece> getPuzzlePieces() throws IOException;
 
-    void printPuzzleResult(PuzzlePiece[][] puzzlePiece);
+    void printPuzzleResult(Solver solver);
 }

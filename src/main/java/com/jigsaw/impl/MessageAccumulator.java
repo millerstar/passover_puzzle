@@ -6,19 +6,18 @@ import java.util.List;
 public class MessageAccumulator {
 
     //private class members
-    private String massage;
-    List<String> massages = new ArrayList<>();
+    public static List<String> massages = new ArrayList<>();
 
     //Public methods:
-    public void addMassage (String strToAdd){
+    public static void addMassage (String strToAdd){
         massages.add(strToAdd);
     }
 
-    public boolean areThereAMassagesToRead(){
-        return massage.length()==0;
+    public static boolean areThereAMassagesToRead(){
+        return massages.size() == 0;
     }
 
-    public List<String> getMassages(){
+    public static List<String> getMassages(){
         return massages;
     }
 }
