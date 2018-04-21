@@ -3,11 +3,18 @@ package com.jigsaw.impl;
 import org.junit.jupiter.api.Test;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;
 
 public class SolverTests {
+
+    public PuzzleBox createPuzzleBox (PuzzlePiece... pieces){
+        return new PuzzleBox(
+                new ArrayList<PuzzlePiece>(
+                        Arrays.asList(pieces)));
+    }
 
     @Test
     public void fourPiecesTest(){
@@ -15,13 +22,8 @@ public class SolverTests {
         PuzzlePiece p2 = new PuzzlePiece(-1, 0, 0, 0, 2);
         PuzzlePiece p3 = new PuzzlePiece(0, 1, 0, 0, 3);
         PuzzlePiece p4 = new PuzzlePiece(-1, 0, 0, 0, 4);
-        List<PuzzlePiece> pieces = new ArrayList<>();
-        pieces.add(p1);
-        pieces.add(p2);
-        pieces.add(p3);
-        pieces.add(p4);
-        PuzzleBox puzzleBox = new PuzzleBox(pieces);
-        Solver solver = new Solver(puzzleBox);
+
+        Solver solver = new Solver(createPuzzleBox(p1, p2, p3, p4));
         solver.createPossibleBoards();
         solver.solvePuzzle();
         assertTrue(solver.validatePuzzleSolution());
@@ -35,15 +37,8 @@ public class SolverTests {
         PuzzlePiece p4 = new PuzzlePiece(0, 1, 0, 0, 4);
         PuzzlePiece p2 = new PuzzlePiece(-1, -1, 0, 0, 5);
         PuzzlePiece p5 = new PuzzlePiece(1, 0, -1, 0, 6);
-        List<PuzzlePiece> pieces = new ArrayList<>();
-        pieces.add(p1);
-        pieces.add(p2);
-        pieces.add(p3);
-        pieces.add(p4);
-        pieces.add(p5);
-        pieces.add(p6);
-        PuzzleBox puzzleBox = new PuzzleBox(pieces);
-        Solver solver = new Solver(puzzleBox);
+
+        Solver solver = new Solver(createPuzzleBox(p6, p3, p1, p4, p2, p5));
         solver.createPossibleBoards();
         solver.solvePuzzle();
         assertTrue(solver.validatePuzzleSolution());
@@ -55,13 +50,8 @@ public class SolverTests {
         PuzzlePiece p2 = new PuzzlePiece(-1, 0, 0, 0, 2);
         PuzzlePiece p3 = new PuzzlePiece(0, 1, 0, 0, 3);
         PuzzlePiece p4 = new PuzzlePiece(-1, -1, 0, 0, 4);
-        List<PuzzlePiece> pieces = new ArrayList<>();
-        pieces.add(p1);
-        pieces.add(p2);
-        pieces.add(p3);
-        pieces.add(p4);
-        PuzzleBox puzzleBox = new PuzzleBox(pieces);
-        Solver solver = new Solver(puzzleBox);
+
+        Solver solver = new Solver(createPuzzleBox(p1, p2, p3, p4));
         solver.createPossibleBoards();
         solver.solvePuzzle();
         assertTrue(solver.getPoolOfPieces().size() == solver.getPuzzleBox().getAllPiecesInBoard().size());
@@ -74,13 +64,8 @@ public class SolverTests {
         PuzzlePiece p2 = new PuzzlePiece(-1, 0, 0, 0, 2);
         PuzzlePiece p3 = new PuzzlePiece(0, 1, 0, 0, 3);
         PuzzlePiece p4 = new PuzzlePiece(-1, 0, 0, 0, 4);
-        List<PuzzlePiece> pieces = new ArrayList<>();
-        pieces.add(p1);
-        pieces.add(p2);
-        pieces.add(p3);
-        pieces.add(p4);
-        PuzzleBox puzzleBox = new PuzzleBox(pieces);
-        Solver solver = new Solver(puzzleBox);
+
+        Solver solver = new Solver(createPuzzleBox(p1, p2, p3, p4));
         solver.createPossibleBoards();
         solver.solvePuzzle();
         assertTrue(solver.validatePuzzleSolution());
@@ -92,13 +77,8 @@ public class SolverTests {
         PuzzlePiece p2 = new PuzzlePiece(-1, 0, 0, 0, 2);
         PuzzlePiece p3 = new PuzzlePiece(0, 1, 0, 0, 3);
         PuzzlePiece p4 = new PuzzlePiece(-1, 0, 0, 0, 4);
-        List<PuzzlePiece> pieces = new ArrayList<>();
-        pieces.add(p1);
-        pieces.add(p2);
-        pieces.add(p3);
-        pieces.add(p4);
-        PuzzleBox puzzleBox = new PuzzleBox(pieces);
-        Solver solver = new Solver(puzzleBox);
+
+        Solver solver = new Solver(createPuzzleBox(p1, p2, p3, p4));
         solver.createPossibleBoards();
         solver.solvePuzzle();
         solver.getCurrentBoard()[0][0] = p4;
@@ -111,13 +91,8 @@ public class SolverTests {
         PuzzlePiece p2 = new PuzzlePiece(-1, 1, 0, 0, 2);
         PuzzlePiece p3 = new PuzzlePiece(-1, -1, 0, 0, 3);
         PuzzlePiece p4 = new PuzzlePiece(1, 0, 0, 0, 4);
-        List<PuzzlePiece> pieces = new ArrayList<>();
-        pieces.add(p1);
-        pieces.add(p2);
-        pieces.add(p3);
-        pieces.add(p4);
-        PuzzleBox puzzleBox = new PuzzleBox(pieces);
-        Solver solver = new Solver(puzzleBox);
+
+        Solver solver = new Solver(createPuzzleBox(p1, p2, p3, p4));
         solver.createPossibleBoards();
         solver.solvePuzzle();
         assertTrue(solver.validatePuzzleSolution());
@@ -129,13 +104,8 @@ public class SolverTests {
         PuzzlePiece p2 = new PuzzlePiece(0, 0, -1, -1, 2);
         PuzzlePiece p3 = new PuzzlePiece(0, 0, 1, 1, 3);
         PuzzlePiece p4 = new PuzzlePiece(0, 0, -1, 0, 4);
-        List<PuzzlePiece> pieces = new ArrayList<>();
-        pieces.add(p1);
-        pieces.add(p2);
-        pieces.add(p3);
-        pieces.add(p4);
-        PuzzleBox puzzleBox = new PuzzleBox(pieces);
-        Solver solver = new Solver(puzzleBox);
+
+        Solver solver = new Solver(createPuzzleBox(p1, p2, p3, p4));
         solver.createPossibleBoards();
         solver.solvePuzzle();
         assertTrue(solver.validatePuzzleSolution());
@@ -147,13 +117,8 @@ public class SolverTests {
         PuzzlePiece p2 = new PuzzlePiece(0, 0, 0, 0, 2);
         PuzzlePiece p3 = new PuzzlePiece(0, 0, 0, 0, 3);
         PuzzlePiece p4 = new PuzzlePiece(0, 0, 0, 0, 4);
-        List<PuzzlePiece> pieces = new ArrayList<>();
-        pieces.add(p1);
-        pieces.add(p2);
-        pieces.add(p3);
-        pieces.add(p4);
-        PuzzleBox puzzleBox = new PuzzleBox(pieces);
-        Solver solver = new Solver(puzzleBox);
+
+        Solver solver = new Solver(createPuzzleBox(p1, p2, p3, p4));
         solver.createPossibleBoards();
         assertTrue(solver.isOneColumnSolutionPossible());
         assertTrue(solver.isOneRowSolutionPossible());
@@ -165,13 +130,8 @@ public class SolverTests {
         PuzzlePiece p2 = new PuzzlePiece(0, 0, 0, 0, 2);
         PuzzlePiece p3 = new PuzzlePiece(0, 1, 0, 0, 3);
         PuzzlePiece p4 = new PuzzlePiece(0, 0, 0, 0, 4);
-        List<PuzzlePiece> pieces = new ArrayList<>();
-        pieces.add(p1);
-        pieces.add(p2);
-        pieces.add(p3);
-        pieces.add(p4);
-        PuzzleBox puzzleBox = new PuzzleBox(pieces);
-        Solver solver = new Solver(puzzleBox);
+
+        Solver solver = new Solver(createPuzzleBox(p1, p2, p3, p4));
         solver.createPossibleBoards();
         solver.solvePuzzle();
         assertFalse(solver.validatePuzzleSolution());

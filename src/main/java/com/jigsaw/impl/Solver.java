@@ -23,6 +23,7 @@ public class Solver {
     private int col;
     private boolean isOneRowSolutionPossible;
     private boolean isOneColumnSolutionPossible;
+    public boolean isPuzzleSolved;
 
     public boolean isOneRowSolutionPossible() {
         return isOneRowSolutionPossible;
@@ -148,15 +149,15 @@ public class Solver {
             }
             if(isSolved){
                 System.out.println(String.format("Puzzle solved for board %s X %s",currentBoard.length, currentBoard[0].length));
+                isPuzzleSolved = true;
                 break;
             } else {
                 System.out.println(String.format("Can't find solution for board %s X %s",currentBoard.length, currentBoard[0].length));
-                //TODO send error to aggregator
             }
         }
         if(!isSolved){
-            //TODO send error to aggregator
             System.out.println("No solution found for given pieces");
+            MessageAccumulator.addMassage("Cannot solve puzzle: it seems that there is no proper solution");
         }
     }
 
@@ -292,12 +293,12 @@ public class Solver {
                 if(currPiece != null){
                     sumOfSides += currPiece.getSideRight() + currPiece.getSideLeft();
                 } else {
-                    // TODO error to aggregator
+                    MessageAccumulator.addMassage(String.format("Puzzle wasn't solved, slot %d:%d is empty", row, col));
                     return false;
                 }
             }
             if(sumOfSides != 0){
-                //TODO error to aggregator
+                MessageAccumulator.addMassage(String.format("Puzzle wasn't solved, sum of row %d is not zero", row));
                 return false;
             }
         }
@@ -308,12 +309,12 @@ public class Solver {
                 if(currPiece != null){
                     sumOfSides += currPiece.getSideTop() + currPiece.getSideBottom();
                 } else {
-                    // TODO error to aggregator
+                    MessageAccumulator.addMassage(String.format("Puzzle wasn't solved, slot %d:%d is empty", row, col));
                     return false;
                 }
             }
             if(sumOfSides != 0){
-                //TODO error to aggregator
+                MessageAccumulator.addMassage(String.format("Puzzle wasn't solved, sum of column %d is not zero", col));
                 return false;
             }
         }
