@@ -11,57 +11,45 @@ import java.util.Arrays;
 import java.util.List;
 
 //TODO interface
-public class FileManager { // implements IPuzzleImporter
-
-//    public interface IPuzzleImporter{
-//
-//        List<PuzzlePiece> getPuzzlePieces();
-//    }
-//
-//    static IPuzzleImporter importer = new FileManager(path, path);
-//    importer.getPuzzlePieces();
+public class FileManager implements IPuzzleDataIO {
 
     // class members
-    private String importPuzzleFileName;
-    private String exportPuzzleFileName;
-    private String importPuzzleFilePath;
-    private String exportPuzzleFilePath;
-    private String localPath = "src/main/resources/";
     private Path importAbsPath;
     private Path exportAbsPath;
-    File inputFile;
-    File outputFile;
-
 
     // constructor
     public FileManager() {
-        this.importPuzzleFileName = "puzzlePiecesFile.txt";
-        this.exportPuzzleFileName = "puzzleResultFile.txt";
-        this.inputFile = new File(this.localPath + this.importPuzzleFileName);
-        this.outputFile = new File(this.localPath + this.exportPuzzleFileName);
-        this.importPuzzleFilePath = inputFile.getAbsolutePath();
-        this.exportPuzzleFilePath = outputFile.getAbsolutePath();
-        this.importAbsPath = Paths.get(this.importPuzzleFilePath);
-        this.exportAbsPath = Paths.get(this.exportPuzzleFilePath);
+        File inputFile = new File("src/main/resources/puzzlePiecesFile.txt");
+        File outputFile = new File("src/main/resources/puzzleResultFile.txt");
+        this.importAbsPath = Paths.get(inputFile.getAbsolutePath());
+        this.exportAbsPath = Paths.get(outputFile.getAbsolutePath());
+    }
+
+    public FileManager(String fileFullPath) {
+        File outputFile = new File("src/main/resources/puzzleResultFile.txt");
+        this.importAbsPath = Paths.get(fileFullPath);
+        this.exportAbsPath = Paths.get(outputFile.getAbsolutePath());
     }
 
     // getters
     public String getImportPuzzleFileName() {
-        return importPuzzleFileName;
+        Path importFileName = importAbsPath.getFileName();
+        return importFileName.toString();
     }
 
     public String getExportPuzzleFileName() {
-        return exportPuzzleFileName;
+        Path exportFileName = exportAbsPath.getFileName();
+        return exportFileName.toString();
     }
 
-    // class methods
+    // class  service methods
     public BufferedReader openFile(String fileName) {
         clearResultFile(); /* clear the output result file */
         BufferedReader reader = null;
         try {
-            if (fileName.equalsIgnoreCase(this.importPuzzleFileName)) {
+            if (fileName.equalsIgnoreCase(this.getImportPuzzleFileName())) {
                 reader = Files.newBufferedReader(this.importAbsPath, Charset.forName("UTF-8"));
-            } else if (fileName.equalsIgnoreCase(this.exportPuzzleFileName)) {
+            } else if (fileName.equalsIgnoreCase(this.getExportPuzzleFileName())) {
                 reader = Files.newBufferedReader(this.exportAbsPath, Charset.forName("UTF-8"));
             } else {
                 throw new InvalidPathException(fileName, "File name is not valid");
@@ -73,7 +61,15 @@ public class FileManager { // implements IPuzzleImporter
         return reader;
     }
 
-    public void printToFile(String outputString) {
+    public void closeFile(BufferedReader reader) {
+        try {
+            reader.close();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+    private void printToFile(String outputString) {
         BufferedWriter writer = null;
         try {
             writer = Files.newBufferedWriter(this.exportAbsPath, Charset.forName("UTF-8"), StandardOpenOption.APPEND);
@@ -85,7 +81,7 @@ public class FileManager { // implements IPuzzleImporter
         }
     }
 
-    public void clearResultFile() {
+    private void clearResultFile() {
         try {
             Files.newBufferedWriter(this.exportAbsPath, StandardOpenOption.TRUNCATE_EXISTING);
         } catch (IOException e) {
@@ -93,14 +89,21 @@ public class FileManager { // implements IPuzzleImporter
         }
     }
 
-    public void closeFile(BufferedReader reader) {
-        try {
-            reader.close();
-        } catch (IOException e) {
-            e.printStackTrace();
+    private List<String[]> getPieceDetailList() throws IOException {
+        BufferedReader reader = openFile(getImportPuzzleFileName());
+        String currentLine = null;
+        List<String[]> pieceDataList = new ArrayList<>();
+        while ((currentLine = reader.readLine()) != null) {
+            if (currentLine.contains("NumElements")) {
+                continue;
+            }
+            pieceDataList.add(currentLine.split(" "));
         }
+        return pieceDataList;
     }
 
+
+    @Override
     public void printPuzzleResult(PuzzlePiece[][] puzzlePiece) {
         if (puzzlePiece != null) {
             for (int i = 0; i < puzzlePiece.length; i++) {
@@ -113,30 +116,15 @@ public class FileManager { // implements IPuzzleImporter
             // TODO: 4/13/2018  pull errors from aggregator and write to file
             printToFile("No valid solution was found for the puzzle");
         }
-
     }
 
-    //TODO Remove
-    public List<String[]> getPieceDetailList() throws IOException {
-        BufferedReader reader = openFile(this.importPuzzleFileName);
-        String currentLine = null;
-        List<String[]> pieceDataList = new ArrayList<>();
-        while ((currentLine = reader.readLine()) != null) {
-            if (currentLine.contains("NumElements")) {
-                continue;
-            }
-            pieceDataList.add(currentLine.split(" "));
-        }
-        return pieceDataList;
-    }
-
+    @Override
     public List<PuzzlePiece> getPuzzlePieces() throws IOException {
         List<String[]> elementsDetailsList = getPieceDetailList();
         List<PuzzlePiece> puzzlePieceList = new ArrayList<>();
         int sideLeft, sideTop, sideRight, sideBottom, id;
         for (String[] element : elementsDetailsList) {
             int[] elementDetailsArray = Arrays.stream(element).mapToInt(Integer::parseInt).toArray();
-//            PuzzlePiece puzzlePiece = new PuzzlePiece(elementDetailsArray[1], elementDetailsArray[2], elementDetailsArray[3], elementDetailsArray[4], elementDetailsArray[0]);
             id = elementDetailsArray[0];
             sideLeft = elementDetailsArray[1];
             sideTop = elementDetailsArray[2];

@@ -52,7 +52,7 @@ class PuzzleImportPiecesTest {
             }
         }
         fileManager.closeFile(reader);
-        assertEquals(expectedVal, actualString, "The '" + expectedVal + "' was not display in the file");
+        assertEquals(expectedVal.trim(), actualString.trim(), "The '" + expectedVal + "' was not display in the file");
     }
 
     @Test
