@@ -31,7 +31,7 @@ public class PuzzleBoxTest {
 
     @Test
     @DisplayName("Test constructor")
-    void initialzationTest() {
+    void initialzationTest() throws WrongElementsFormat {
         List<PuzzlePiece> puzzle = new ArrayList<>();
         List<PuzzlePiece> puzzleToCompare = new ArrayList<>();
 

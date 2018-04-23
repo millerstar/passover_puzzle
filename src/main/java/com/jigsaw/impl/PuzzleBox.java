@@ -20,17 +20,13 @@ public class PuzzleBox {
 
     private int numOfPieces;
 
-    public PuzzleBox(List<PuzzlePiece> pieces) {
+    public PuzzleBox(List<PuzzlePiece> pieces) throws WrongElementsFormat {
         this.allPiecesInBoard = pieces;
         straightRightLeftPieces = getStraightPiecesGroup();
         maleRightLeftPieces = getMalePiecesGroup();
         femaleRightLeftPieces = getFemalePiecesGroup();
         numOfPieces=pieces.size();
-        try {
-            validateAllPiecesOnBox();
-        } catch (WrongElementsFormat wrongElementsFormat) {
-            wrongElementsFormat.printStackTrace();
-        }
+//        validateAllPiecesOnBox();
     }
 
     public int getNumOfPieces() {
@@ -78,7 +74,11 @@ public class PuzzleBox {
         for (PuzzlePiece puzzleElement : allPiecesInBoard) {
             sum += puzzleElement.getSumOfAllSides();
         }
-      return sum==0;
+        if ( sum != 0){
+            MessageAccumulator.addMassage("Cannot solve puzzle: sum of edges is not zero");
+            return false;
+        }
+         return true;
     }
 
     public List<PuzzlePiece> getAllPiecesInBoard() {
@@ -93,17 +93,23 @@ public class PuzzleBox {
                 cornersCount++;
             }
         }
-        return cornersCount>2;
+        if ( cornersCount < 2){
+            MessageAccumulator.addMassage(String.format("Missing corners in puzzle , should be at least 2, got %d  ", cornersCount));
+            return false;
+        }
+        return true;
     }
     //Checking number of pieces in board, etc..
     private boolean isPuzzleSolvable(){
         if (numOfPieces==1){
             return allPiecesInBoard.get(0).isPieceASquare();
         }
-        if ((numOfPieces==0)){return false;}
+        if ((numOfPieces==0)){
+            MessageAccumulator.addMassage(String.format("We got zero pieces, can't solve puzzle "));
+            return false;}
 
         return validateThereAreAtLeast2CornersOnPuzzleBox();
-        }
+    }
 
     public List<PuzzlePiece> getPiecesGroupByType(int type) {
         List<PuzzlePiece> retVal = new ArrayList<PuzzlePiece>();
@@ -116,14 +122,24 @@ public class PuzzleBox {
     }
 
     //Validate all puzzle pieces in the box
-    public boolean validateAllPiecesOnBox() throws WrongElementsFormat{
+    public void validateAllPiecesOnBox() throws WrongElementsFormat{
         PuzzlePieceValidator validator = new PuzzlePieceValidator();
 
+        if (!( basicValidations(validator) &&
+                        isPuzzleSolvable() &&
+                        isSumOfAllSidesZero())){
+            throw new WrongElementsFormat();
+        }
+
+    }
+
+    private boolean basicValidations(PuzzlePieceValidator validator) {
         for (PuzzlePiece piece: allPiecesInBoard) {
-            if (validator.validatePuzzlePiece(piece)){ return false; };
+            if (validator.validatePuzzlePiece(piece)){
+                MessageAccumulator.addMassage(String.format("Piece %d not valid", piece.getPieceID()));
+                return false; };
         }
         return  true;
-
     }
 }
 

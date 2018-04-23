@@ -139,13 +139,10 @@ public class FileManager implements IPuzzleDataIO {
                 printToFile("\n");
             }
         } else {
-            // TODO: 4/13/2018  pull errors from aggregator and write to file
-            printToFile("No valid solution was found for the puzzle");
-
             // print errors to file
-            if (!errorArrayList.isEmpty()) {
-                Collections.sort(errorArrayList);
-                for (String error : errorArrayList) {
+            if (!MessageAccumulator.getMassages().isEmpty()) {
+                Collections.sort(MessageAccumulator.getMassages());
+                for (String error : MessageAccumulator.getMassages()) {
                     printToFile(error);
                     printToFile("\n");
                 }

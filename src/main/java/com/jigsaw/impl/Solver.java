@@ -25,6 +25,11 @@ public class Solver {
     private boolean isOneColumnSolutionPossible;
     public boolean isPuzzleSolved;
 
+    // constructor for negative flow, use only isPuzzleSolved member
+    public Solver() {
+        isPuzzleSolved = false;
+    }
+
     public boolean isOneRowSolutionPossible() {
         return isOneRowSolutionPossible;
     }

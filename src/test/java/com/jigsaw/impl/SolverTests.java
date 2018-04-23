@@ -10,14 +10,14 @@ import static org.junit.jupiter.api.Assertions.*;
 
 public class SolverTests {
 
-    public PuzzleBox createPuzzleBox (PuzzlePiece... pieces){
+    public PuzzleBox createPuzzleBox (PuzzlePiece... pieces) throws WrongElementsFormat {
         return new PuzzleBox(
                 new ArrayList<PuzzlePiece>(
                         Arrays.asList(pieces)));
     }
 
     @Test
-    public void fourPiecesTest(){
+    public void fourPiecesTest() throws WrongElementsFormat {
         PuzzlePiece p1 = new PuzzlePiece(0, 1, 0, 0, 1);
         PuzzlePiece p2 = new PuzzlePiece(-1, 0, 0, 0, 2);
         PuzzlePiece p3 = new PuzzlePiece(0, 1, 0, 0, 3);
@@ -30,7 +30,7 @@ public class SolverTests {
     }
 
     @Test
-    public void sixPiecesTest(){
+    public void sixPiecesTest() throws WrongElementsFormat {
         PuzzlePiece p6 = new PuzzlePiece(0, -1, 0, 0, 1);
         PuzzlePiece p3 = new PuzzlePiece(1, -1, 0, 0, 2);
         PuzzlePiece p1 = new PuzzlePiece(1, 0, 0, 1, 3);
@@ -45,7 +45,7 @@ public class SolverTests {
     }
 
     @Test
-    public void negativeFourPiecesTest(){
+    public void negativeFourPiecesTest() throws WrongElementsFormat {
         PuzzlePiece p1 = new PuzzlePiece(0, 1, 0, 0, 1);
         PuzzlePiece p2 = new PuzzlePiece(-1, 0, 0, 0, 2);
         PuzzlePiece p3 = new PuzzlePiece(0, 1, 0, 0, 3);
@@ -59,7 +59,7 @@ public class SolverTests {
     }
 
     @Test
-    public void positiveValidatePuzzleSolutionTest(){
+    public void positiveValidatePuzzleSolutionTest() throws WrongElementsFormat {
         PuzzlePiece p1 = new PuzzlePiece(0, 1, 0, 0, 1);
         PuzzlePiece p2 = new PuzzlePiece(-1, 0, 0, 0, 2);
         PuzzlePiece p3 = new PuzzlePiece(0, 1, 0, 0, 3);
@@ -72,7 +72,7 @@ public class SolverTests {
     }
 
     @Test
-    public void negativeValidatePuzzleSolutionTest(){
+    public void negativeValidatePuzzleSolutionTest() throws WrongElementsFormat {
         PuzzlePiece p1 = new PuzzlePiece(0, 1, 0, 0, 1);
         PuzzlePiece p2 = new PuzzlePiece(-1, 0, 0, 0, 2);
         PuzzlePiece p3 = new PuzzlePiece(0, 1, 0, 0, 3);
@@ -86,7 +86,7 @@ public class SolverTests {
     }
 
     @Test
-    public void posValidateOneRowSolutionTest(){
+    public void posValidateOneRowSolutionTest() throws WrongElementsFormat {
         PuzzlePiece p1 = new PuzzlePiece(0, 1, 0, 0, 1);
         PuzzlePiece p2 = new PuzzlePiece(-1, 1, 0, 0, 2);
         PuzzlePiece p3 = new PuzzlePiece(-1, -1, 0, 0, 3);
@@ -99,7 +99,7 @@ public class SolverTests {
     }
 
     @Test
-    public void posOneLineSolutionsCheckerTest(){
+    public void posOneLineSolutionsCheckerTest() throws WrongElementsFormat {
         PuzzlePiece p1 = new PuzzlePiece(0, 0, 0, 1, 1);
         PuzzlePiece p2 = new PuzzlePiece(0, 0, -1, -1, 2);
         PuzzlePiece p3 = new PuzzlePiece(0, 0, 1, 1, 3);
@@ -112,7 +112,7 @@ public class SolverTests {
     }
 
     @Test
-    public void posOneColumnSolutionTest(){
+    public void posOneColumnSolutionTest() throws WrongElementsFormat {
         PuzzlePiece p1 = new PuzzlePiece(0, 0, 0, 0, 1);
         PuzzlePiece p2 = new PuzzlePiece(0, 0, 0, 0, 2);
         PuzzlePiece p3 = new PuzzlePiece(0, 0, 0, 0, 3);
@@ -125,7 +125,7 @@ public class SolverTests {
     }
 
     @Test
-    public void negativeOneLineSolution(){
+    public void negativeOneLineSolution() throws WrongElementsFormat {
         PuzzlePiece p1 = new PuzzlePiece(0, 0, 0, 0, 1);
         PuzzlePiece p2 = new PuzzlePiece(0, 0, 0, 0, 2);
         PuzzlePiece p3 = new PuzzlePiece(0, 1, 0, 0, 3);
