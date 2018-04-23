@@ -9,12 +9,14 @@ public class PuzzlePieceValidator {
 
     //Private class members
     private PuzzlePiece piece;
+    MessageAccumulator messageAccumulator = new MessageAccumulator();
 
     //public methods
     public boolean isValidPiece(PuzzlePiece pieceToValidate){
         int size;
         size =  pieceToValidate.getSumOfAllSides();
         if (size>4 || size<0 || pieceToValidate==null){
+            messageAccumulator.addMassage(String.format("Not A valid piece! Piece ID = ",pieceToValidate.getPieceID()));
             return false;
         }
         int sideLeft = pieceToValidate.getSideLeft();
