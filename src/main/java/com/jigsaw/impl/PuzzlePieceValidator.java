@@ -25,6 +25,7 @@ public class PuzzlePieceValidator {
         int sideBottom = pieceToValidate.getSideBottom();
 
         if (sideLeft>1||sideLeft<0||sideRight>1||sideRight<0||sideTop>1||sideTop<0||sideBottom>1||sideBottom<0){
+            messageAccumulator.addMassage(String.format("Not A valid piece! Piece ID = ",pieceToValidate.getPieceID()) +" Has wrong coordinates ");
             return true;// we got the wrong coordinates
         }
         return true;
@@ -44,6 +45,10 @@ public class PuzzlePieceValidator {
             return true;
         }
         return false;
+        }
+
+        public boolean validatePuzzlePiece (PuzzlePiece pieceToValidate){
+            return isPieceNotNull(pieceToValidate)&& isValidPiece(pieceToValidate);
         }
 
 

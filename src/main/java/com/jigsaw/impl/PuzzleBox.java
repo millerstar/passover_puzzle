@@ -26,6 +26,11 @@ public class PuzzleBox {
         maleRightLeftPieces = getMalePiecesGroup();
         femaleRightLeftPieces = getFemalePiecesGroup();
         numOfPieces=pieces.size();
+        try {
+            validateAllPiecesOnBox();
+        } catch (WrongElementsFormat wrongElementsFormat) {
+            wrongElementsFormat.printStackTrace();
+        }
     }
 
     public int getNumOfPieces() {
@@ -108,6 +113,17 @@ public class PuzzleBox {
             }
         }
         return retVal;
+    }
+
+    //Validate all puzzle pieces in the box
+    public boolean validateAllPiecesOnBox() throws WrongElementsFormat{
+        PuzzlePieceValidator validator = new PuzzlePieceValidator();
+
+        for (PuzzlePiece piece: allPiecesInBoard) {
+            if (validator.validatePuzzlePiece(piece)){ return false; };
+        }
+        return  true;
+
     }
 }
 
