@@ -13,20 +13,11 @@ public class PuzzlePieceValidator {
 
     //public methods
     public boolean isValidPiece(PuzzlePiece pieceToValidate){
-        int size;
-        size =  pieceToValidate.getSumOfAllSides();
-        if (size>4 || size<0 || pieceToValidate==null){
+        int sum =  pieceToValidate.getSumOfAllSides();
+        System.out.println("sum = " + sum + pieceToValidate);
+        if (sum>4 || sum<-4){
             messageAccumulator.addMassage(String.format("Not A valid piece! Piece ID = ",pieceToValidate.getPieceID()));
             return false;
-        }
-        int sideLeft = pieceToValidate.getSideLeft();
-        int sideRight = pieceToValidate.getSideRight();
-        int sideTop = pieceToValidate.getSideTop();
-        int sideBottom = pieceToValidate.getSideBottom();
-
-        if (sideLeft>1||sideLeft<0||sideRight>1||sideRight<0||sideTop>1||sideTop<0||sideBottom>1||sideBottom<0){
-            messageAccumulator.addMassage(String.format("Not A valid piece! Piece ID = ",pieceToValidate.getPieceID()) +" Has wrong coordinates ");
-            return false;// we got the wrong coordinates
         }
         return true;
     }
@@ -47,8 +38,8 @@ public class PuzzlePieceValidator {
         return false;
         }
 
-        public boolean validatePuzzlePiece (PuzzlePiece pieceToValidate){
-            return isPieceNotNull(pieceToValidate)&& isValidPiece(pieceToValidate);
+        public boolean validatePuzzlePiece (PuzzlePiece pieceToValidate) {
+            return isValidPiece(pieceToValidate);
         }
 
 

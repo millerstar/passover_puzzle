@@ -26,7 +26,6 @@ public class PuzzleBox {
         maleRightLeftPieces = getMalePiecesGroup();
         femaleRightLeftPieces = getFemalePiecesGroup();
         numOfPieces=pieces.size();
-//        validateAllPiecesOnBox();
     }
 
     public int getNumOfPieces() {
@@ -130,14 +129,14 @@ public class PuzzleBox {
                         isSumOfAllSidesZero())){
             throw new WrongElementsFormat();
         }
-
     }
 
     private boolean basicValidations(PuzzlePieceValidator validator) {
         for (PuzzlePiece piece: allPiecesInBoard) {
             if (validator.validatePuzzlePiece(piece)){
                 MessageAccumulator.addMassage(String.format("Piece %d not valid", piece.getPieceID()));
-                return false; };
+                return false;
+            }
         }
         return  true;
     }
