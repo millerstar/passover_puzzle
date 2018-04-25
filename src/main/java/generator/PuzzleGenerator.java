@@ -29,6 +29,11 @@ public class PuzzleGenerator {
     }
 
     // getter
+
+    /**
+     * get valid puzzle pieces
+     * @return blended puzzle pieces with valid solution
+     */
     public List<PuzzlePiece> getPuzzlePieces() {
         return puzzlePieces;
     }
