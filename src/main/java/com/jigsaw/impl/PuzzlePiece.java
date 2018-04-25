@@ -113,9 +113,6 @@ public class PuzzlePiece {
 
     public boolean isPieceASquare() { return getSumOfAllSides()==0; }
 
-
-
-
     @Override
     public String toString() {
         return "ID = " + this.pieceID + ", Sides = " + this.sideLeft + " " + this.sideRight + " " + this.sideTop + " " + this.sideBottom;
@@ -140,6 +137,17 @@ public class PuzzlePiece {
                     this.getSideRight() == ((PuzzlePiece) other).getSideRight() &&
                     this.getSideTop() == ((PuzzlePiece) other).getSideTop()) &&
                     this.getSideBottom() == ((PuzzlePiece) other).getSideBottom();
+    }
+
+    public boolean isValid(){
+        if (sideLeft<-1||sideLeft>1||sideRight<-1||sideRight>1||sideBottom<-1||sideBottom>1||sideTop<-1||sideTop>1){
+            return false;
+        }
+        if (getSumOfAllSides()>4||getSumOfAllSides()<-4){
+            return false;
+        }
+
+        return true;
     }
 
 }

@@ -8,6 +8,7 @@ import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.List;
 
+import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 /**
@@ -44,29 +45,22 @@ public class PuzzleBoxTest {
         assertTrue(puzzleBox1.equals(puzzleBoxToCompare));
     }
 
+    @Test
+    @DisplayName("Test allPiecesInBoxAreValid in Puzzle Box ")
+    public void allPiecesInBoxAreValidTest() throws WrongElementsFormat {
+        PuzzlePiece piece1 = new PuzzlePiece(-1,-1,1,1,1);
+        PuzzlePiece piece2 = new PuzzlePiece(0,1,1,-1,2);
+        PuzzlePiece piece3 = new PuzzlePiece(-1,0,1,1,3);
+        PuzzlePiece piece4 = new PuzzlePiece(1,1,0,0,4);
 
+        List <PuzzlePiece> pieces = new ArrayList<>();
+        pieces.add(piece1);
+        pieces.add(piece2);
+        pieces.add(piece3);
+        pieces.add(piece4);
 
-//        public PuzzleBox(List<PuzzlePiece> pieces) {
-//
-//        public int getNumOfPieces() {
-//        }
-//
-//        public List<PuzzlePiece> getMalePiecesGroup(){
-//
-//
-//        public List<PuzzlePiece> getFemalePiecesGroup(){
-//
-//
-//        public List<PuzzlePiece> getStraightPiecesGroup(){
-//
-//
-//        public boolean isSumOfAllSidesZero() {
-//
-//
-//        public List<PuzzlePiece> getAllPiecesInBoard() {
-//
-//    }
-//
-//
+        PuzzleBox box1 = new PuzzleBox(pieces);
+        assertTrue(box1.allPiecesInBoxAreValid());
+    }
 
 }
