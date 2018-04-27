@@ -130,7 +130,7 @@ public class FileManager implements IPuzzleDataIO {
 
     @Override
     public void printPuzzleResult(Solver solver) {
-        if (solver.isPuzzleSolved && solver.validatePuzzleSolution()) {
+        if (solver.isPuzzleSolved.get() && solver.validatePuzzleSolution()) {
             PuzzlePiece[][] board = solver.getCurrentBoard();
             for (int i = 0; i < board.length; i++) {
                 for (int j = 0; j < board[i].length; j++) {

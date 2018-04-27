@@ -22,6 +22,6 @@ public class PuzzleManager {
 
     public static void main(String[] args) throws IOException {
         PuzzleManager puzzleManager = new PuzzleManager();
-        puzzleManager.findSolutionToPuzzle("C:\\Users\\md9897\\Documents\\PuzzlTests\\AdditionalPuzzleTests\\Tests\\test18.in");
+        puzzleManager.findSolutionToPuzzle("C:\\Users\\md9897\\Documents\\PuzzlTests\\AdditionalPuzzleTests\\Tests\\test16.in");
     }
 }

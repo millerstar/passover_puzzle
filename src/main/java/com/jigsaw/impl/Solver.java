@@ -4,6 +4,9 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.Executors;
+import java.util.concurrent.ThreadPoolExecutor;
+import java.util.concurrent.atomic.AtomicBoolean;
 
 
 /**
@@ -12,22 +15,20 @@ import java.util.Map;
  *  Date:   01/04/2018
  */
 
-public class Solver {
+public class Solver{
 
-    private List<PuzzlePiece[][]> boards = new ArrayList<>(); // todo add class for board, add members that save prev and current possition
-    private PuzzlePiece[][] currentBoard;
+    private List<Board> boards = new ArrayList<>(); // todo add class for board, add members that save prev and current possition
+    private ThreadLocal<Board> currentBoard = new ThreadLocal<>();
+    private Board solvedBoard;
     private PuzzleBox puzzleBox;
-    private List<PuzzlePiece> poolOfPieces = new ArrayList<>();
-    private Map<String, List<PuzzlePiece>> slotToPieces= new HashMap<>();
-    private int row;
-    private int col;
+    private ThreadLocal<List<PuzzlePiece>> poolOfPieces = ThreadLocal.withInitial(ArrayList::new);
+    private ThreadLocal<Map<String, List<PuzzlePiece>>> slotToPieces= ThreadLocal.withInitial(HashMap::new);
     private boolean isOneRowSolutionPossible;
     private boolean isOneColumnSolutionPossible;
-    public boolean isPuzzleSolved;
+    public AtomicBoolean isPuzzleSolved = new AtomicBoolean(false);
 
     // constructor for negative flow, use only isPuzzleSolved member
     public Solver() {
-        isPuzzleSolved = false;
     }
 
     public boolean isOneRowSolutionPossible() {
@@ -40,7 +41,6 @@ public class Solver {
 
     public Solver(PuzzleBox puzzleBox) {
         this.puzzleBox = puzzleBox;
-        this.poolOfPieces.addAll(puzzleBox.getAllPiecesInBoard());
     }
 
     public PuzzleBox getPuzzleBox() {
@@ -53,14 +53,14 @@ public class Solver {
         for( int i = numOfPieces/2; i >= 2; i--){
             if(numOfPieces % i == 0){
                 PuzzlePiece[][] board = new PuzzlePiece[i][numOfPieces/i];
-                boards.add(board);
+                boards.add(new Board(board));
             }
         }
         if (isOneRowSolutionPossible){
-            boards.add(new PuzzlePiece[1][numOfPieces]);
+            boards.add(new Board(new PuzzlePiece[1][numOfPieces]));
         }
         if (isOneColumnSolutionPossible){
-            boards.add(new PuzzlePiece[numOfPieces][1]);
+            boards.add(new Board(new PuzzlePiece[numOfPieces][1]));
         }
     }
 
@@ -103,130 +103,126 @@ public class Solver {
         }
     }
 
-    public void solvePuzzle(){
+    private void solveBoard(Board board){
         boolean isSolved = false;
-        for(PuzzlePiece[][] board: boards){
-            row = 0;
-            col = 0;
-            currentBoard = board;
-            System.out.println(String.format("Starting to check board %s X %s",currentBoard.length, currentBoard[0].length));
-            while(true){
-                if (row < 0){
-                    break;
-                }
-                if (row == currentBoard.length){
-                    isSolved = true;
-                    break;
-                }
-                String slotKey = Integer.toString(row) + Integer.toString(col);
-                if (!slotToPieces.containsKey(slotKey)) {
-                    slotToPieces.put(slotKey, piecesForSlot());
-                }
+        currentBoard.set(board);
+        poolOfPieces.get().addAll(puzzleBox.getAllPiecesInBoard());
+        System.out.println(String.format(Thread.currentThread().getName() + " Starting to check board %s X %s",currentBoard.get().getBoard().length, currentBoard.get().getBoard()[0].length));
+        while(true){
+            if(isPuzzleSolved.get()){
+                break;
+            }
+            if (currentBoard.get().getRow() < 0){
+                break;
+            }
+            if (currentBoard.get().getRow() == currentBoard.get().getBoard().length){
+                isSolved = true;
+                break;
+            }
+            String slotKey = Integer.toString(board.getRow()) + Integer.toString(board.getCol());
+            if (!slotToPieces.get().containsKey(slotKey)) {
+                slotToPieces.get().put(slotKey, piecesForSlot());
+            }
 
-                List<PuzzlePiece> possiblePiecesForSlot = slotToPieces.get(slotKey);
+            List<PuzzlePiece> possiblePiecesForSlot = slotToPieces.get().get(slotKey);
+            if(possiblePiecesForSlot.isEmpty()){
+                prepareStepBack(slotKey, possiblePiecesForSlot);
+                stepBack();
+                continue;
+            }
+            // remove piece from possible solution to prevent same piece twice on board
+            // todo extract to method or add flag to PuzzlePiece isOnBoard
+            while(!poolOfPieces.get().contains(possiblePiecesForSlot.get(0))){
+                possiblePiecesForSlot.remove(possiblePiecesForSlot.get(0));
                 if(possiblePiecesForSlot.isEmpty()){
-                    prepareStepBack(slotKey, possiblePiecesForSlot);
-                    stepBack();
-                    continue;
-                }
-                // remove piece from possible solution to prevent same piece twice on board
-                // todo extract to method or add flag to PuzzlePiece isOnBoard
-                while(!poolOfPieces.contains(possiblePiecesForSlot.get(0))){
-                    possiblePiecesForSlot.remove(possiblePiecesForSlot.get(0));
-                    if(possiblePiecesForSlot.isEmpty()){
-                        break;
-                    }
-                }
-
-                if (possiblePiecesForSlot.size() > 0) {
-                    PuzzlePiece pieceToBePlaced = possiblePiecesForSlot.get(0);
-                    returnPieceToPool();
-                    currentBoard[row][col] = pieceToBePlaced;
-                    System.out.println(pieceToBePlaced + " added");
-                    poolOfPieces.remove(pieceToBePlaced);
-                    possiblePiecesForSlot.remove(pieceToBePlaced);
-                    stepForwardRow();
-                    stepForwardColumn();
-                } else {
-                    prepareStepBack(slotKey, possiblePiecesForSlot);
-                    stepBack();
+                    break;
                 }
             }
-            if(isSolved){
-                System.out.println(String.format("Puzzle solved for board %s X %s",currentBoard.length, currentBoard[0].length));
-                isPuzzleSolved = true;
-                break;
+
+            if (possiblePiecesForSlot.size() > 0) {
+                PuzzlePiece pieceToBePlaced = possiblePiecesForSlot.get(0);
+                returnPieceToPool();
+                currentBoard.get().addPiece(pieceToBePlaced);
+                System.out.println(Thread.currentThread().getName() + " " + pieceToBePlaced + " added");
+                poolOfPieces.get().remove(pieceToBePlaced);
+                possiblePiecesForSlot.remove(pieceToBePlaced);
+                currentBoard.get().stepForwardRow();
+                currentBoard.get().stepForwardColumn();
             } else {
-                System.out.println(String.format("Can't find solution for board %s X %s",currentBoard.length, currentBoard[0].length));
+                prepareStepBack(slotKey, possiblePiecesForSlot);
+                stepBack();
             }
         }
-        if(!isSolved){
-            System.out.println("No solution found for given pieces");
+        if(isSolved){
+            System.out.println(String.format(Thread.currentThread().getName() + " Puzzle solved for board %s X %s",currentBoard.get().numberOfRows(), currentBoard.get().numberOfColumns()));
+            isPuzzleSolved.compareAndSet(false, true);
+            solvedBoard = currentBoard.get();
+        } else {
+            System.out.println(String.format(Thread.currentThread().getName() + " Can't find solution for board %s X %s",currentBoard.get().numberOfRows(), currentBoard.get().numberOfColumns()));
+        }
+    }
+
+    public void solvePuzzle(){
+        // fixed number of threads solution
+//        ThreadPoolExecutor executor = (ThreadPoolExecutor) Executors.newFixedThreadPool(1);
+        // run threads at will solution , very fast
+        ThreadPoolExecutor executor = (ThreadPoolExecutor) Executors.newCachedThreadPool();
+        for(Board board: boards){
+            executor.execute(
+                    new Runnable() {
+                        @Override
+                        public void run() {
+                            solveBoard(board);
+                        }
+                    }
+            );
+        }
+        // wait for threads to finish
+        while(executor.getActiveCount() != 0){
+            try {
+                Thread.sleep(1);
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
+        }
+        if(!isPuzzleSolved.get()){
+            System.out.println(Thread.currentThread().getName() + " No solution found for given pieces");
             MessageAccumulator.addMassage("Cannot solve puzzle: it seems that there is no proper solution");
         }
     }
 
     private void prepareStepBack(String slotKey, List<PuzzlePiece> possiblePiecesForSlot) {
-        slotToPieces.remove(slotKey, possiblePiecesForSlot);
+        slotToPieces.get().remove(slotKey, possiblePiecesForSlot);
         returnPieceToPool();
-        currentBoard[row][col] = null;
+        currentBoard.get().addPiece(null);
     }
 
     private void stepBack() {
-        stepBackRow();
-        stepBackColumn();
+        currentBoard.get().stepBackRow();
+        currentBoard.get().stepBackColumn();
     }
 
     private void returnPieceToPool() {
-        if(currentBoard[row][col] != null){
-            poolOfPieces.add(currentBoard[row][col]);
-            System.out.println(currentBoard[row][col] + " returned to poolOfPieces");
-        }
-    }
-
-    private void stepBackColumn() {
-        if(col == 0){
-            col = currentBoard[0].length - 1;
-        } else {
-            col--;
-        }
-
-    }
-
-    private void stepBackRow() {
-        if(col == 0){
-            row--;
-        }
-    }
-
-    private void stepForwardColumn() {
-        if(col == currentBoard[0].length - 1){
-            col = 0;
-        } else {
-            col++;
-        }
-    }
-
-    private void stepForwardRow() {
-        if(col == currentBoard[0].length - 1){
-            row++;
+        if(currentBoard.get().currentSlot() != null){
+            poolOfPieces.get().add(currentBoard.get().currentSlot());
+            System.out.println(Thread.currentThread().getName() + " " + currentBoard.get().currentSlot() + " returned to poolOfPieces");
         }
     }
 
     private List<PuzzlePiece> piecesForSlot() {
         List<PuzzlePiece> ret = new ArrayList<>();
         int sideLeft, sideTop, sideRight, sideBottom;
-        if( row == 0 && col == 0 && currentBoard[row][col] == null){
+        if( currentBoard.get().getRow() == 0 && currentBoard.get().getCol() == 0 && currentBoard.get().currentSlot() == null){
             sideLeft = 0;
             sideTop = 0;
             // check for one row
-            if( currentBoard[0].length == 1) {
+            if( currentBoard.get().numberOfColumns() == 1) {
                 sideRight = 0;
             } else {
                 sideRight = 2;
             }
             // check for one column
-            if (currentBoard.length == 1){
+            if (currentBoard.get().numberOfRows() == 1){
                 sideBottom = 0;
             } else {
                 sideBottom = 2;
@@ -234,51 +230,19 @@ public class Solver {
 
         } else {
             // todo fake piece object, add compare to PuzzlePiec
-            sideLeft = getRightSideFromLeftPiece()*(-1);
-            sideTop = getBottomSideFromUpPiece() *(-1);
-            sideRight = getLeftSideFromRightPice() ; // should be 0 or 2
-            sideBottom = getTopSideFromDownPiece() ; // should be 0 or 2
+            sideLeft = currentBoard.get().getRightSideFromLeftPiece()*(-1);
+            sideTop = currentBoard.get().getBottomSideFromUpPiece() *(-1);
+            sideRight = currentBoard.get().getLeftSideFromRightPice() ; // should be 0 or 2
+            sideBottom = currentBoard.get().getTopSideFromDownPiece() ; // should be 0 or 2
 
         }
 
-        for(PuzzlePiece piece: poolOfPieces){
+        for(PuzzlePiece piece: poolOfPieces.get()){
             if(isPieceFit(piece, sideLeft, sideTop, sideRight, sideBottom)){
                 ret.add(piece);
             }
         }
         return ret;
-    }
-
-    private int getTopSideFromDownPiece() {
-        if ( row == currentBoard.length - 1){
-            return 0;
-        } else {
-            return 2;
-        }
-    }
-
-    private int getLeftSideFromRightPice() {
-        if (col == currentBoard[0].length - 1){
-            return 0;
-        } else {
-            return 2;
-        }
-    }
-
-    private int getBottomSideFromUpPiece() {
-        if( row == 0){
-            return 0;
-        } else {
-            return currentBoard[row-1][col].getSideBottom();
-        }
-    }
-
-    private int getRightSideFromLeftPiece(){
-        if( col == 0){
-            return 0;
-        }
-        return currentBoard[row][col - 1].getSideRight();
-
     }
 
     // todo fake piece object, add compare to PuzzlePiec
@@ -290,50 +254,54 @@ public class Solver {
     }
 
     public boolean validatePuzzleSolution(){
-        int sumOfSides = 0;
-        // validate rows
-        for(int row = 0; row < currentBoard.length; row++){
-            for(int col = 0; col < currentBoard[0].length; col++){
-                PuzzlePiece currPiece = currentBoard[row][col];
-                if(currPiece != null){
-                    sumOfSides += currPiece.getSideRight() + currPiece.getSideLeft();
-                } else {
-                    MessageAccumulator.addMassage(String.format("Puzzle wasn't solved, slot %d:%d is empty", row, col));
+        if (isPuzzleSolved.get()){
+            int sumOfSides = 0;
+            // validate rows
+            for(int row = 0; row < solvedBoard.numberOfRows(); row++){
+                for(int col = 0; col < solvedBoard.numberOfColumns(); col++){
+                    PuzzlePiece currPiece = solvedBoard.getBoard()[row][col];
+                    if(currPiece != null){
+                        sumOfSides += currPiece.getSideRight() + currPiece.getSideLeft();
+                    } else {
+                        MessageAccumulator.addMassage(String.format("Puzzle wasn't solved, slot %d:%d is empty", row, col));
+                        return false;
+                    }
+                }
+                if(sumOfSides != 0){
+                    MessageAccumulator.addMassage(String.format("Puzzle wasn't solved, sum of row %d is not zero", row));
                     return false;
                 }
             }
-            if(sumOfSides != 0){
-                MessageAccumulator.addMassage(String.format("Puzzle wasn't solved, sum of row %d is not zero", row));
-                return false;
-            }
-        }
-        // validate columns
-        for(int col = 0; col < currentBoard[0].length; col++){
-            for(int row = 0; row < currentBoard.length; row++){
-                PuzzlePiece currPiece = currentBoard[row][col];
-                if(currPiece != null){
-                    sumOfSides += currPiece.getSideTop() + currPiece.getSideBottom();
-                } else {
-                    MessageAccumulator.addMassage(String.format("Puzzle wasn't solved, slot %d:%d is empty", row, col));
+            // validate columns
+            for(int col = 0; col < solvedBoard.numberOfColumns(); col++){
+                for(int row = 0; row < solvedBoard.numberOfRows(); row++){
+                    PuzzlePiece currPiece = solvedBoard.getBoard()[row][col];
+                    if(currPiece != null){
+                        sumOfSides += currPiece.getSideTop() + currPiece.getSideBottom();
+                    } else {
+                        MessageAccumulator.addMassage(String.format("Puzzle wasn't solved, slot %d:%d is empty", row, col));
+                        return false;
+                    }
+                }
+                if(sumOfSides != 0){
+                    MessageAccumulator.addMassage(String.format("Puzzle wasn't solved, sum of column %d is not zero", col));
                     return false;
                 }
             }
-            if(sumOfSides != 0){
-                MessageAccumulator.addMassage(String.format("Puzzle wasn't solved, sum of column %d is not zero", col));
-                return false;
-            }
+            return true;
+        } else {
+            return false;
         }
-        return true;
     }
 
-    public List<PuzzlePiece> getPoolOfPieces() {
-        return poolOfPieces;
-    }
+//    public List<PuzzlePiece> getPoolOfPieces() {
+//        return poolOfPieces.get();
+//    }
 
     public PuzzlePiece[][] getCurrentBoard() {
-        if (currentBoard == null || currentBoard[0][0] == null){
+        if (solvedBoard.getBoard() == null || solvedBoard.getBoard()[0][0] == null){
             return null;
         }
-        return currentBoard;
+        return solvedBoard.getBoard();
     }
 }

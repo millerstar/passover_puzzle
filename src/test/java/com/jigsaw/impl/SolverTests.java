@@ -114,7 +114,7 @@ public class SolverTests {
         Solver solver = new Solver(createPuzzleBox(p1, p2, p3, p4));
         solver.createPossibleBoards();
         solver.solvePuzzle();
-        assertTrue(solver.getPoolOfPieces().size() == solver.getPuzzleBox().getAllPiecesInBoard().size());
+        //assertTrue(solver.getPoolOfPieces().size() == solver.getPuzzleBox().getAllPiecesInBoard().size());
         assertFalse(solver.validatePuzzleSolution());
     }
 

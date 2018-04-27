@@ -9,82 +9,119 @@ package com.jigsaw.impl;
  */
 
 
-import java.util.ArrayList;
-import java.util.List;
-
 public class Board {
 
     String id;
     private PuzzlePiece[][] board;
-    private List<PuzzlePiece> frameSidePieces = new ArrayList<>();
-    private List<PuzzlePiece> innerPieces = new ArrayList<>();
-    private int[] nextPieceIndex;
+    private int row;
+    private int col;
+    private int rowLength;
+    private int colLength;
 
-    public Board(String id, PuzzlePiece[][] board, int[] nextPieceIndex, List<PuzzlePiece> frameSidePieces, List<PuzzlePiece> innerPieces) {
-        this.id = id;
+
+
+    public Board(PuzzlePiece[][] board) {
+        this.id = board.length + "X" + board[0].length;
         this.board = board;
-        this.nextPieceIndex = nextPieceIndex;
-        this.frameSidePieces = frameSidePieces;
-        this.innerPieces = innerPieces;
-    }
-
-    // TODO copy constructor
-    public Board(Board boardToClone){
-        this.id = "clonedFrom_" + boardToClone.getId();
-
-        this.board = new PuzzlePiece[boardToClone.board.length][boardToClone.board[0].length];
-        for(int i =0; i < this.board.length; i++){
-            for(int j=0; j < this.board[0].length; j++){
-                this.board[i][j] = boardToClone.board[i][j];
-            }
-        }
-
-        this.frameSidePieces.addAll(boardToClone.frameSidePieces);
-        this.innerPieces.addAll(boardToClone.innerPieces);
-
-        this.nextPieceIndex = new int[boardToClone.nextPieceIndex.length];
-        for(int i = 0; i < this.nextPieceIndex.length; i++){
-            this.nextPieceIndex[i] = boardToClone.nextPieceIndex[i];
-        }
-    }
-
-    public Board(String id){
-        this.id = id;
-    }
-
-    public String getId() {
-        return id;
+        row = 0;
+        col = 0;
+        rowLength = board.length;
+        colLength = board[0].length;
     }
 
     public PuzzlePiece[][] getBoard() {
         return board;
     }
 
-    public int[] getNextPieceIndex() {
-        return nextPieceIndex;
+    public int getRow() {
+        return row;
     }
 
-    public List<PuzzlePiece> getFrameSidePieces() {
-        return frameSidePieces;
+    public void setRow(int row) {
+        this.row = row;
     }
 
-    public List<PuzzlePiece> getInnerPieces() {
-        return innerPieces;
+    public int getCol() {
+        return col;
     }
 
-    public void setFrameSidePieces(List<PuzzlePiece> frameSidePieces) {
-        this.frameSidePieces = frameSidePieces;
+    public void setCol(int col) {
+        this.col = col;
     }
 
-    public void setInnerPieces(List<PuzzlePiece> innerPieces) {
-        this.innerPieces = innerPieces;
+    public void addPiece(PuzzlePiece pieceToBePlaced) {
+        board[row][col] = pieceToBePlaced;
     }
 
-    public void setBoard(PuzzlePiece[][] board) {
-        this.board = board;
+    public int numberOfRows() {
+        return rowLength;
     }
 
-    public void setNextPieceIndex(int[] nextPieceIndex) {
-        this.nextPieceIndex = nextPieceIndex;
+    public int numberOfColumns() {
+        return colLength;
+    }
+
+    public PuzzlePiece currentSlot() {
+        return board[row][col];
+    }
+
+    public void stepBackColumn() {
+        if(col == 0){
+            col = numberOfColumns() - 1;
+        } else {
+            col--;
+        }
+    }
+
+    public void stepBackRow() {
+        if(col == 0){
+            row--;
+        }
+    }
+
+    public void stepForwardColumn() {
+        if(col == numberOfColumns() - 1){
+            col = 0;
+        } else {
+            col++;
+        }
+    }
+
+    public void stepForwardRow() {
+        if(col == numberOfColumns() - 1){
+            row++;
+        }
+    }
+
+    public int getTopSideFromDownPiece() {
+        if ( getRow() == numberOfRows() - 1){
+            return 0;
+        } else {
+            return 2;
+        }
+    }
+
+    public int getLeftSideFromRightPice() {
+        if (getCol() == numberOfColumns() - 1){
+            return 0;
+        } else {
+            return 2;
+        }
+    }
+
+    public int getBottomSideFromUpPiece() {
+        if( getRow() == 0){
+            return 0;
+        } else {
+            return board[row-1][col].getSideBottom();
+        }
+    }
+
+    public int getRightSideFromLeftPiece(){
+        if( col == 0){
+            return 0;
+        }
+        return board[getRow()][getCol() - 1].getSideRight();
+
     }
 }
