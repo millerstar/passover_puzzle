@@ -9,13 +9,15 @@ public class PuzzleGenerator {
     // class members
     private int rows;
     private int colunms;
+    private int numOfCards;
     private List<PuzzlePiece> puzzlePieces;
-    private Map<Integer,Integer> puzzleIndexMap;
+    private Map<Integer, Integer> puzzleIndexMap;
 
     // constructor
     public PuzzleGenerator(int rows, int colunms) {
         this.rows = rows;
         this.colunms = colunms;
+        this.numOfCards = rows * colunms;
         puzzlePieces = new ArrayList<>();
         puzzleIndexMap = new HashMap<>();
     }
@@ -24,6 +26,7 @@ public class PuzzleGenerator {
     public PuzzleGenerator() {
         this.rows = 2;
         this.colunms = 2;
+        this.numOfCards = rows * colunms;
         puzzlePieces = new ArrayList<>();
         puzzleIndexMap = new HashMap<>();
     }
@@ -32,6 +35,7 @@ public class PuzzleGenerator {
 
     /**
      * get valid puzzle pieces
+     *
      * @return blended puzzle pieces with valid solution
      */
     public List<PuzzlePiece> getPuzzlePieces() {
@@ -39,25 +43,43 @@ public class PuzzleGenerator {
     }
 
     // methods
-    // TODO: 4/25/2018 replace public to private
+
     /**
      * generate random number for blending puzzle pieces result
-     * @param minVal - first index piece in the pack
+     *
      * @param maxVal - last index piece in the pack
      * @return random number according the given bounds
      */
-    public int getRandomNumber(int minVal, int maxVal) {
+    private int getRandomNumber(int maxVal) {
         Random rand = new Random();
-        int value = rand.nextInt((maxVal - minVal) + 1) + minVal;
-        return value;
+        return rand.nextInt((maxVal - 1) + 1) + 1;
+    }
+
+    /**
+     * blend all puzzle pieces indexes
+     */
+    private void blendIndexToMap() {
+        int newCardIndex = 0;
+        for (int i = 1; i <= numOfCards; i++) {
+            newCardIndex = getRandomNumber(numOfCards );
+            if (!puzzleIndexMap.containsValue(newCardIndex)) {
+                puzzleIndexMap.put(i, newCardIndex);
+            } else {
+                while (puzzleIndexMap.containsValue(newCardIndex)) {
+                    newCardIndex = getRandomNumber(numOfCards);
+                }
+                puzzleIndexMap.put(i, newCardIndex);
+            }
+        }
     }
 
 
-
     public static void main(String[] args) throws InterruptedException {
-        PuzzleGenerator pz = new PuzzleGenerator();
-        for (int i = 0; i < 15 ; i++) {
-            System.out.print(pz.getRandomNumber(1,6) + " ");
+        PuzzleGenerator pz = new PuzzleGenerator(4, 6);
+        pz.blendIndexToMap();
+
+        for (int i = 0; i < 15; i++) {
+            System.out.print(pz.getRandomNumber(7) + " ");
         }
 
     }
