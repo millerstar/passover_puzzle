@@ -10,10 +10,12 @@ import java.util.Objects;
  *  Modified:   16/04/2018
  */
 
+//TODO: add c'Tor with and without boolean rotation
 public class PuzzlePiece {
 
     private int sideLeft, sideRight, sideTop, sideBottom;
     private int pieceID;
+    private int rotationDegree;
 
     public boolean isIdPieceOnTheBoard() {
         return idPieceOnTheBoard;
@@ -32,6 +34,17 @@ public class PuzzlePiece {
         this.sideTop = sideTop;
         this.sideBottom = sideBottom;
         this.pieceID = pieceID;
+        rotationDegree=0;
+    }
+
+    //Copy C'tor
+    public PuzzlePiece (PuzzlePiece piece){
+        this.sideTop = piece.sideTop;
+        this.sideBottom = piece.sideBottom;
+        this.sideRight = piece.sideRight;
+        this.sideLeft = piece.sideLeft;
+        this.pieceID = piece.pieceID;
+        this.rotationDegree = piece.rotationDegree;
     }
 
     @Override
@@ -111,8 +124,6 @@ public class PuzzlePiece {
 
     public boolean isPieceACorner() { return isTopRightCorner()||isBottomRightCorner()||isTopLeftCorner()||isBottomLeftCorner(); }
 
-    public boolean isPieceASquare() { return getSumOfAllSides()==0; }
-
     @Override
     public String toString() {
         return "ID = " + this.pieceID + ", Sides = " + this.sideLeft + " " + this.sideRight + " " + this.sideTop + " " + this.sideBottom;
@@ -150,6 +161,56 @@ public class PuzzlePiece {
         return true;
     }
 
+
+    private void rotateRightBy90Degrees(){
+        int sideTop=this.getSideTop();
+        int sideBottom = this.getSideBottom();
+        int sideLeft = this.getSideLeft();
+        int sideRight = this.getSideRight();
+
+        this.setSideTop(sideRight);
+        this.setSideRight(sideBottom);
+        this.setSideBottom(sideLeft);
+        this.setSideLeft(sideTop);
+    }
+
+   public PuzzlePiece getNewRotetedPuzzlePiece(){
+        PuzzlePiece retVal=null;
+        int numOfAvilableRotations = getPieceOptionalRotations(this);
+        if (numOfAvilableRotations==0){
+            return this;
+        }
+        else{
+            retVal = duplicatePuzzlePiece(this);
+            retVal.rotateRightBy90Degrees();
+        }
+        return retVal;
+   }
+
+    private PuzzlePiece duplicatePuzzlePiece(PuzzlePiece pieceToDuplicate){
+        if (getPieceOptionalRotations(pieceToDuplicate)>0) {
+            return new PuzzlePiece(pieceToDuplicate);
+        }
+        return pieceToDuplicate;
+    }
+
+    private int getPieceOptionalRotations(PuzzlePiece piece){
+        if (areAllSidesEqual(piece)){
+            return 0;
+        }
+        if (areTwoSidesEqual(piece)){
+            return 1;
+        }
+        return 3;
+    }
+
+    private boolean areAllSidesEqual(PuzzlePiece piece){
+        return (piece.getSideBottom())==(piece.getSideTop())==((piece.getSideRight())==(piece.getSideLeft()));
+    }
+
+    private boolean areTwoSidesEqual(PuzzlePiece piece){
+        return (piece.getSideBottom())==(piece.getSideTop()) && ((piece.getSideRight())==(piece.getSideLeft()));
+    }
 }
 
 
