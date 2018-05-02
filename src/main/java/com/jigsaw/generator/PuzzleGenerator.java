@@ -1,7 +1,6 @@
 package com.jigsaw.generator;
 
 import com.jigsaw.impl.PuzzlePiece;
-
 import java.util.*;
 
 public class PuzzleGenerator {
@@ -42,6 +41,7 @@ public class PuzzleGenerator {
      * @return blended puzzle pieces with valid solution
      */
     public List<PuzzlePiece> getPuzzlePieces() {
+        Collections.shuffle(puzzlePieces);
         return puzzlePieces;
     }
 
