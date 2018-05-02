@@ -1,23 +1,25 @@
-package generator;
-
+package com.jigsaw.generator;
 
 import com.jigsaw.impl.PuzzlePiece;
 
 import java.util.*;
 
 public class PuzzleGenerator {
+
     // class members
     private int rows;
-    private int colunms;
+    private int columns;
     private int numOfCards;
+    private boolean isValidPuzzle;
     private List<PuzzlePiece> puzzlePieces;
     private Map<Integer, Integer> puzzleIndexMap;
 
     // constructor
-    public PuzzleGenerator(int rows, int colunms) {
+    public PuzzleGenerator(int rows, int columns, boolean isValidPuzzle) {
         this.rows = rows;
-        this.colunms = colunms;
-        this.numOfCards = rows * colunms;
+        this.columns = columns;
+        this.numOfCards = rows * columns;
+        this.isValidPuzzle = isValidPuzzle;
         puzzlePieces = new ArrayList<>();
         puzzleIndexMap = new HashMap<>();
     }
@@ -25,8 +27,9 @@ public class PuzzleGenerator {
     // default constructor - temp, test simple case
     public PuzzleGenerator() {
         this.rows = 2;
-        this.colunms = 2;
-        this.numOfCards = rows * colunms;
+        this.columns = 2;
+        this.isValidPuzzle = true;
+        this.numOfCards = rows * columns;
         puzzlePieces = new ArrayList<>();
         puzzleIndexMap = new HashMap<>();
     }
@@ -61,7 +64,7 @@ public class PuzzleGenerator {
     private void blendIndexToMap() {
         int newCardIndex = 0;
         for (int i = 1; i <= numOfCards; i++) {
-            newCardIndex = getRandomNumber(numOfCards );
+            newCardIndex = getRandomNumber(numOfCards);
             if (!puzzleIndexMap.containsValue(newCardIndex)) {
                 puzzleIndexMap.put(i, newCardIndex);
             } else {
@@ -75,7 +78,7 @@ public class PuzzleGenerator {
 
 
     public static void main(String[] args) throws InterruptedException {
-        PuzzleGenerator pz = new PuzzleGenerator(4, 6);
+        PuzzleGenerator pz = new PuzzleGenerator(4, 6, true);
         pz.blendIndexToMap();
 
         for (int i = 0; i < 15; i++) {
