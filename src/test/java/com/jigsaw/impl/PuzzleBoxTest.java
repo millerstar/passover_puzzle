@@ -37,10 +37,10 @@ public class PuzzleBoxTest {
         List<PuzzlePiece> puzzleToCompare = new ArrayList<>();
 
         puzzle.add(piece1);
-        PuzzleBox puzzleBox1 = new PuzzleBox(puzzle, false);
-        puzzleToCompare = puzzleBox1.getAllPiecesInBoard();
+        PuzzleBox puzzleBox1 = new PuzzleBox(puzzle);
+        puzzleToCompare = puzzleBox1.getRotatedPiecesNewList();
 
-        PuzzleBox puzzleBoxToCompare = new PuzzleBox(puzzleToCompare, false);
+        PuzzleBox puzzleBoxToCompare = new PuzzleBox(puzzleToCompare);
 
         assertTrue(puzzleBox1.equals(puzzleBoxToCompare));
     }
@@ -53,11 +53,11 @@ public class PuzzleBoxTest {
         List<PuzzlePiece> puzzleToCompare = new ArrayList<>();
 
         puzzle.add(piece1);
-        PuzzleBox puzzleBox1 = new PuzzleBox(puzzle, false);
-        puzzleToCompare = puzzleBox1.getAllPiecesInBoard();
+        PuzzleBox puzzleBox1 = new PuzzleBox(puzzle);
+        puzzleToCompare = puzzleBox1.getRotatedPiecesNewList();
         //Rotation = true
-        PuzzleBox puzzleBoxToCompare = new PuzzleBox(puzzleToCompare, true);
-
+        PuzzleBox puzzleBoxToCompare = new PuzzleBox(puzzleToCompare);
+        puzzleBoxToCompare.getRotatedPiecesNewList();
         assertTrue(puzzleBox1.equals(puzzleBoxToCompare));
     }
     @Test
@@ -74,14 +74,15 @@ public class PuzzleBoxTest {
         pieces.add(piece3);
         pieces.add(piece4);
 
-        PuzzleBox box1 = new PuzzleBox(pieces, false);
+        PuzzleBox box1 = new PuzzleBox(pieces);
+
         assertTrue(box1.allPiecesInBoxAreValid());
     }
 
     //Passed
     @Test
     @DisplayName("Test createRotatedPiecesTest in Puzzle Box - this test checks if the roteted pieace have been automatically generated ")
-    public void createRotatedPiecesTest() throws WrongElementsFormat {
+    public void createRotatedPieceTest() throws WrongElementsFormat {
 
         PuzzlePiece piece1 = new PuzzlePiece(0,1,1,-1,2);
 
@@ -90,27 +91,65 @@ public class PuzzleBoxTest {
         List <PuzzlePiece> pieces = new ArrayList<>();
         pieces.add(piece1);
 
-        PuzzleBox box1 = new PuzzleBox(pieces, true);
-        List<PuzzlePiece> puzzlePieces = new ArrayList<>();
+        PuzzleBox box1 = new PuzzleBox(pieces);
+
+        List<PuzzlePiece> puzzlePieces = box1.getRotatedPiecesNewList();
         puzzlePieces.addAll(box1.getAllPiecesInBoard());
         assertTrue(puzzlePieces.contains(piece1));
         assertTrue(puzzlePieces.contains(piece1Rotated));
     }
 
-    //Passed BUT NEED TO TALK WITH MATVEY ABOUT EQUALS
     @Test
     @DisplayName("Test Negative case in createRotatedPiecesTest in Puzzle Box ")
-    public void createRotatedPiecesNegativeTest() throws WrongElementsFormat {
+    public void createRotatedPieceNegativeTest() throws WrongElementsFormat {
         List <PuzzlePiece> pieces = new ArrayList<>();
         PuzzlePiece piece1 = new PuzzlePiece(0,1,1,-1,1);
         //PuzzlePiece piece1RotatedShouldNotBeInBox = new PuzzlePiece(1,1,0,1,20);
 
         pieces.add(piece1);
 
-        PuzzleBox box1 = new PuzzleBox(pieces, true);
+        PuzzleBox box1 = new PuzzleBox(pieces);
         List<PuzzlePiece> puzzlePieces = new ArrayList<>();
-        puzzlePieces.addAll(box1.getAllPiecesInBoard());
+        puzzlePieces.addAll(box1.getRotatedPiecesNewList());
         assertTrue(box1.countNumOfPiecesWithTheSameID(1) == 4);
     }
 
-}
+    //PASS
+    @Test
+    @DisplayName("Checks rotated pieces list size when given different pieces shapes ")
+    public void checkIf() throws WrongElementsFormat {
+        //Expected: no rotations
+        PuzzlePiece rectanglePiece = new PuzzlePiece(0,0,0,0,1);
+        //Expected: no rotations
+        PuzzlePiece rectanglePiece2 = new PuzzlePiece(-1,-1,-1,-1,2);
+        //Expected: 2 rotations
+        PuzzlePiece trianglePiece = new PuzzlePiece(-1,-1,0,0,3);
+        //Expected: 2 rotations
+        PuzzlePiece trianglePiece2 = new PuzzlePiece(0,0,1,1,4);
+
+        PuzzlePiece regularPiece1 = new PuzzlePiece(-1,0,1,-1,4);
+
+        List<PuzzlePiece> pieces = new ArrayList<>();
+
+        pieces.add(rectanglePiece);
+        pieces.add(rectanglePiece2);
+        pieces.add(trianglePiece);
+        pieces.add(trianglePiece2);
+        pieces.add(regularPiece1);
+
+
+        PuzzleBox box1 = new PuzzleBox(pieces);
+        List<PuzzlePiece> piecesWithRotation = box1.getRotatedPiecesNewList();
+
+
+        assertTrue(pieces.size()==5);
+        assertTrue(piecesWithRotation.size()==10);
+
+
+
+
+
+
+    }
+
+    }

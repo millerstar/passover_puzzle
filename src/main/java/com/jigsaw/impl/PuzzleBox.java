@@ -21,14 +21,7 @@ public class PuzzleBox {
 
     private int numOfPieces;
 
-    //C'tor overloading - with rotation
-    public PuzzleBox(List<PuzzlePiece> pieces, boolean isWithRotation) throws WrongElementsFormat {
-        this(pieces);
-        if (isWithRotation) {
-            allPiecesInBoardWithRotation = createRotatedPieces();
-        }
-    }
-    //C'tor overloading - without rotattion
+    //C'tor overloading - with default rotation = 0
     public PuzzleBox(List<PuzzlePiece> pieces) throws WrongElementsFormat {
         this.allPiecesInBoard = pieces;
         straightRightLeftPieces = getStraightPiecesGroup();
@@ -39,7 +32,6 @@ public class PuzzleBox {
             throw new WrongElementsFormat();
         }
     }
-
 
     public int getNumOfPieces() {
         return numOfPieces;
@@ -164,19 +156,18 @@ public class PuzzleBox {
         return true;
     }
 
-    protected List<PuzzlePiece> createRotatedPieces() {
+    public List<PuzzlePiece> getRotatedPiecesNewList() {
+        int pieceOptionalRotations = 0;
         for (PuzzlePiece piece : allPiecesInBoard) {
             //Add the orginal piece
             allPiecesInBoardWithRotation.add(piece);
-            PuzzlePiece rotatedPiece = piece.getNewRotetedPuzzlePiece();
-            //Add 90 degrees rotated piece
-            allPiecesInBoardWithRotation.add(rotatedPiece);
-            //Add 180 degrees rotated piece
-            rotatedPiece = piece.getNewRotetedPuzzlePiece();
-            allPiecesInBoardWithRotation.add(rotatedPiece);
-            //Add 270 degrees rotated piece
-            rotatedPiece = piece.getNewRotetedPuzzlePiece();
-            allPiecesInBoardWithRotation.add(rotatedPiece);
+
+            pieceOptionalRotations = piece.getPieceOptionalRotations(piece);
+            for (int i=0;i<pieceOptionalRotations;i++){
+                PuzzlePiece rotatedPiece = piece.getNewRotetedPuzzlePiece();
+                allPiecesInBoardWithRotation.add(rotatedPiece);
+            }
+
         }
 
         return allPiecesInBoardWithRotation;
@@ -193,6 +184,9 @@ public class PuzzleBox {
 
         return numOfPiecesWithTheSameID;
         }
+
+
+
 }
 
 
