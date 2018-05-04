@@ -4,6 +4,7 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 /**
  *
@@ -32,8 +33,35 @@ public class PuzzlePieceTest {
         assertEquals(squarePiece.getSumOfAllSides(),0);
     }
 
+    @Test
+    @DisplayName("Test isEqualByShape method")
+    public void isEqualByShapeTest(){
+        PuzzlePiece piece1 = new PuzzlePiece(0,1,1,-1,2);
+        PuzzlePiece piece2 = new PuzzlePiece(0,1,1,-1,20);
+        assertTrue((piece1.isEqualByShape(piece2)));
+    }
+//BUG??
+    @Test
+    @DisplayName("Test rotation ability")
+    public void rotationTest(){
+        PuzzlePiece piece1 = new PuzzlePiece(0,1,1,-1,2);
+        PuzzlePiece piece1Rotated = piece1.getNewRotetedPuzzlePiece();
+        PuzzlePiece piece2RotatedForCompare = new PuzzlePiece(-1,1,0,1,2);
+
+        System.out.println(piece2RotatedForCompare.isEqualByShape(piece1Rotated));
+        assertTrue((piece2RotatedForCompare.isEqualByShape(piece1Rotated)));
+    }
+
+    @Test
+    @DisplayName("Test that the rotated piece has the same coordinates sum than the original piece")
+    public void rotationCheckPiecesSumOfCoordinatesTest(){
+        PuzzlePiece piece1 = new PuzzlePiece(0,1,1,-1,2);
+        PuzzlePiece piece1Rotated = piece1.getNewRotetedPuzzlePiece();
+
+        assertTrue((piece1Rotated.getSumOfAllSides() == piece1.getSumOfAllSides()));
 
 
+    }
 
 
-}
+    }

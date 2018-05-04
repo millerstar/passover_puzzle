@@ -13,20 +13,22 @@ import java.util.List;
 
 // this class contain pieces sorted by place they should take
 public class PuzzleBox {
-    private List<PuzzlePiece> straightRightLeftPieces = new ArrayList<>() ;
+    private List<PuzzlePiece> straightRightLeftPieces = new ArrayList<>();
     private List<PuzzlePiece> maleRightLeftPieces = new ArrayList<>();
     private List<PuzzlePiece> femaleRightLeftPieces = new ArrayList<>();
-    private List<PuzzlePiece> allPiecesInBoard = new ArrayList<>();
+    private List<PuzzlePiece> allPiecesInBoard ;
+    private List<PuzzlePiece> allPiecesInBoardWithRotation = new ArrayList<>();
 
     private int numOfPieces;
 
+    //C'tor overloading - with default rotation = 0
     public PuzzleBox(List<PuzzlePiece> pieces) throws WrongElementsFormat {
         this.allPiecesInBoard = pieces;
         straightRightLeftPieces = getStraightPiecesGroup();
         maleRightLeftPieces = getMalePiecesGroup();
         femaleRightLeftPieces = getFemalePiecesGroup();
-        numOfPieces=pieces.size();
-        if (!allPiecesInBoxAreValid()){
+        numOfPieces = pieces.size();
+        if (!allPiecesInBoxAreValid()) {
             throw new WrongElementsFormat();
         }
     }
@@ -35,11 +37,11 @@ public class PuzzleBox {
         return numOfPieces;
     }
 
-    private List<PuzzlePiece> getMalePiecesGroup(){
+    private List<PuzzlePiece> getMalePiecesGroup() {
         List<PuzzlePiece> retVal = new ArrayList<PuzzlePiece>();
 
-        for (PuzzlePiece piece :allPiecesInBoard) {
-            if (piece.getSideLeft()==1) {
+        for (PuzzlePiece piece : allPiecesInBoard) {
+            if (piece.getSideLeft() == 1) {
                 //Adding male piece
                 retVal.add(piece);
             }
@@ -47,11 +49,11 @@ public class PuzzleBox {
         return retVal;
     }
 
-    private List<PuzzlePiece> getFemalePiecesGroup(){
+    private List<PuzzlePiece> getFemalePiecesGroup() {
         List<PuzzlePiece> retVal = new ArrayList<PuzzlePiece>();
 
-        for (PuzzlePiece piece :allPiecesInBoard) {
-            if (piece.getSideLeft()==-1) {
+        for (PuzzlePiece piece : allPiecesInBoard) {
+            if (piece.getSideLeft() == -1) {
                 //Adding female piece
                 retVal.add(piece);
             }
@@ -59,11 +61,11 @@ public class PuzzleBox {
         return retVal;
     }
 
-    private List<PuzzlePiece> getStraightPiecesGroup(){
+    private List<PuzzlePiece> getStraightPiecesGroup() {
         List<PuzzlePiece> retVal = new ArrayList<PuzzlePiece>();
 
-        for (PuzzlePiece piece :allPiecesInBoard) {
-            if (piece.getSideLeft()==0) {
+        for (PuzzlePiece piece : allPiecesInBoard) {
+            if (piece.getSideLeft() == 0) {
                 //Adding straight piece
                 retVal.add(piece);
             }
@@ -76,47 +78,50 @@ public class PuzzleBox {
         for (PuzzlePiece puzzleElement : allPiecesInBoard) {
             sum += puzzleElement.getSumOfAllSides();
         }
-        if ( sum != 0){
+        if (sum != 0) {
             MessageAccumulator.addMassage("Cannot solve puzzle: sum of edges is not zero");
             return false;
         }
-         return true;
+        return true;
     }
 
     public List<PuzzlePiece> getAllPiecesInBoard() {
         return allPiecesInBoard;
     }
-//TODO: Add writing errors to my List<String>
+
+    //TODO: Add writing errors to my List<String>
     //Make sure the puzzle is solvable
-    private boolean validateThereAreAtLeast2CornersOnPuzzleBox(){
-        int cornersCount=0;
-        for (PuzzlePiece piece :allPiecesInBoard) {
-            if (piece.isPieceACorner()){
+    private boolean validateThereAreAtLeast2CornersOnPuzzleBox() {
+        int cornersCount = 0;
+        for (PuzzlePiece piece : allPiecesInBoard) {
+            if (piece.isPieceACorner()) {
                 cornersCount++;
             }
         }
-        if ( cornersCount < 2){
+        if (cornersCount < 2) {
             MessageAccumulator.addMassage(String.format("Missing corners in puzzle , should be at least 2, got %d  ", cornersCount));
             return false;
         }
         return true;
     }
+
     //Checking number of pieces in board, etc..
-    private boolean isPuzzleSolvable(){
-        if (numOfPieces==1){
-            return allPiecesInBoard.get(0).isPieceASquare();
+    private boolean isPuzzleSolvable() {
+        if (numOfPieces == 1) {
+            return allPiecesInBoard.get(0).isSumOfAllSidesZero();
         }
-        if ((numOfPieces==0)){
+        if ((numOfPieces == 0)) {
             MessageAccumulator.addMassage(String.format("We got zero pieces, can't solve puzzle "));
-            return false;}
+            return false;
+        }
 
         return validateThereAreAtLeast2CornersOnPuzzleBox();
     }
 
     public List<PuzzlePiece> getPiecesGroupByType(int type) {
         List<PuzzlePiece> retVal = new ArrayList<PuzzlePiece>();
-        for (PuzzlePiece piece :allPiecesInBoard) {
-            if (piece.getSideLeft()==type) {
+        for (PuzzlePiece piece : allPiecesInBoard) {
+            if (piece.getSideLeft() == type) {
                 retVal.add(piece);
             }
         }
@@ -124,15 +129,15 @@ public class PuzzleBox {
     }
 
     //Validate all puzzle pieces in the box
-    public boolean allPiecesInBoxAreValid() throws WrongElementsFormat{
-        int numberOfValidPiecesInBox=0;
+    public boolean allPiecesInBoxAreValid() throws WrongElementsFormat {
+        int numberOfValidPiecesInBox = 0;
         PuzzlePieceValidator validator = new PuzzlePieceValidator();
-        for (PuzzlePiece piece : allPiecesInBoard){
-            if (piece.isValid()){
+        for (PuzzlePiece piece : allPiecesInBoard) {
+            if (piece.isValid()) {
                 numberOfValidPiecesInBox++;
             }
         }
-        return numberOfValidPiecesInBox==allPiecesInBoard.size();
+        return numberOfValidPiecesInBox == allPiecesInBoard.size();
 
 //        if (!( basicValidations(validator) &&
 //                        isPuzzleSolvable() &&
@@ -142,14 +147,47 @@ public class PuzzleBox {
     }
 
     private boolean basicValidations(PuzzlePieceValidator validator) {
-        for (PuzzlePiece piece: allPiecesInBoard) {
-            if (validator.validatePuzzlePiece(piece)){
+        for (PuzzlePiece piece : allPiecesInBoard) {
+            if (validator.validatePuzzlePiece(piece)) {
                 MessageAccumulator.addMassage(String.format("Piece %d not valid", piece.getPieceID()));
                 return false;
             }
         }
-        return  true;
+        return true;
     }
+
+    public List<PuzzlePiece> getRotatedPiecesNewList() {
+        int pieceOptionalRotations = 0;
+        for (PuzzlePiece piece : allPiecesInBoard) {
+            //Add the orginal piece
+            allPiecesInBoardWithRotation.add(piece);
+
+            pieceOptionalRotations = piece.getPieceOptionalRotations(piece);
+            for (int i=0;i<pieceOptionalRotations;i++){
+                PuzzlePiece rotatedPiece = piece.getNewRotetedPuzzlePiece();
+                allPiecesInBoardWithRotation.add(rotatedPiece);
+            }
+
+        }
+
+        return allPiecesInBoardWithRotation;
+        }
+
+        public int countNumOfPiecesWithTheSameID(int ID){
+        int numOfPiecesWithTheSameID = 0;
+
+        for (PuzzlePiece piece: allPiecesInBoardWithRotation ) {
+                if (piece.getPieceID() == ID){
+                    numOfPiecesWithTheSameID++;
+                }
+            }
+
+        return numOfPiecesWithTheSameID;
+        }
+
+
+
 }
+
 
 

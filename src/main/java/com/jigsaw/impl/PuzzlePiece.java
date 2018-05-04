@@ -10,10 +10,12 @@ import java.util.Objects;
  *  Modified:   16/04/2018
  */
 
+//TODO: add c'Tor with and without boolean rotation
 public class PuzzlePiece {
 
     private int sideLeft, sideRight, sideTop, sideBottom;
     private int pieceID;
+    private int rotationDegree;
 
     public boolean isIdPieceOnTheBoard() {
         return idPieceOnTheBoard;
@@ -25,13 +27,32 @@ public class PuzzlePiece {
 
     private boolean idPieceOnTheBoard;
 //TODO: is piece on the board and where - return coordinates
-
+//Create a piece with default rotation = 0
     public PuzzlePiece(int sideLeft, int sideRight, int sideTop, int sideBottom, int pieceID) {
         this.sideLeft = sideLeft;
         this.sideRight = sideRight;
         this.sideTop = sideTop;
         this.sideBottom = sideBottom;
         this.pieceID = pieceID;
+        rotationDegree=0;
+    }
+
+    public int getRotationDegree() {
+        return rotationDegree;
+    }
+
+    public void setRotationDegree(int rotationDegree) {
+        this.rotationDegree = rotationDegree;
+    }
+
+    //Copy C'tor
+    public PuzzlePiece (PuzzlePiece piece){
+        this.sideTop = piece.sideTop;
+        this.sideBottom = piece.sideBottom;
+        this.sideRight = piece.sideRight;
+        this.sideLeft = piece.sideLeft;
+        this.pieceID = piece.pieceID;
+        this.rotationDegree = piece.rotationDegree;
     }
 
     @Override
@@ -111,11 +132,9 @@ public class PuzzlePiece {
 
     public boolean isPieceACorner() { return isTopRightCorner()||isBottomRightCorner()||isTopLeftCorner()||isBottomLeftCorner(); }
 
-    public boolean isPieceASquare() { return getSumOfAllSides()==0; }
-
     @Override
     public String toString() {
-        return "ID = " + this.pieceID + ", Sides = " + this.sideLeft + " " + this.sideRight + " " + this.sideTop + " " + this.sideBottom;
+        return "[" + this.pieceID +"]" +" : " + "L=" + this.sideLeft + " R= " + this.sideRight + " T= " + this.sideTop + " B= " + this.sideBottom;
     }
 
     @Override
@@ -130,7 +149,6 @@ public class PuzzlePiece {
     public boolean isEqualByShape(Object other) {
 
         if (!(other instanceof PuzzlePiece)) { return false; }
-        if (this.pieceID == ((PuzzlePiece) other).pieceID) {return true; }
 
             PuzzlePiece o = (PuzzlePiece) other;
             return (this.getSideLeft() == ((PuzzlePiece) other).getSideLeft() &&
@@ -150,6 +168,56 @@ public class PuzzlePiece {
         return true;
     }
 
+
+    private void rotateRightBy90Degrees(){
+        int sideTop=this.getSideTop();
+        int sideBottom = this.getSideBottom();
+        int sideLeft = this.getSideLeft();
+        int sideRight = this.getSideRight();
+
+        this.setSideTop(sideLeft);
+        this.setSideRight(sideTop);
+        this.setSideBottom(sideRight);
+        this.setSideLeft(sideBottom);
+    }
+
+    //Returns new rotated puzzle piece only if needed one
+   public PuzzlePiece getNewRotetedPuzzlePiece(){
+        PuzzlePiece retVal=null;
+        if (getPieceOptionalRotations(this)==0){
+            return this;
+        }
+        else{
+            retVal = duplicatePuzzlePiece(this);
+            retVal.rotateRightBy90Degrees();
+        }
+        return retVal;
+   }
+
+    private PuzzlePiece duplicatePuzzlePiece(PuzzlePiece pieceToDuplicate){
+        if (getPieceOptionalRotations(pieceToDuplicate)>0) {
+            return new PuzzlePiece(pieceToDuplicate);
+        }
+        return pieceToDuplicate;
+    }
+
+    public int getPieceOptionalRotations(PuzzlePiece piece){
+        if (areAllSidesEqual(piece)){
+            return 0;
+        }
+        if (areTwoSidesEqual(piece)){
+            return 1;
+        }
+        return 3;
+    }
+
+    private boolean areAllSidesEqual(PuzzlePiece piece){
+        return  piece.getSideBottom()==piece.getSideTop() && piece.getSideRight()==piece.getSideLeft()&& piece.getSideRight()==piece.getSideBottom();
+    }
+
+    private boolean areTwoSidesEqual(PuzzlePiece piece){
+        return (piece.getSideBottom())==(piece.getSideTop()) && ((piece.getSideRight())==(piece.getSideLeft()));
+    }
 }
 
 
