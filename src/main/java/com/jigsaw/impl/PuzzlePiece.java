@@ -134,7 +134,7 @@ public class PuzzlePiece {
 
     @Override
     public String toString() {
-        return "[" + this.pieceID +"]" +" : " + "L=" + this.sideLeft + " R= " + this.sideRight + " T= " + this.sideTop + " B= " + this.sideBottom;
+        return "[#" + this.pieceID + " " + "L=" + this.sideLeft + " R=" + this.sideRight + " T=" + this.sideTop + " B=" + this.sideBottom + " Rot=" + this.rotationDegree + "]";
     }
 
     @Override

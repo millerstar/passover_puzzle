@@ -1,9 +1,6 @@
 package com.jigsaw.impl;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ThreadPoolExecutor;
 import java.util.concurrent.atomic.AtomicBoolean;
@@ -11,7 +8,7 @@ import java.util.concurrent.atomic.AtomicBoolean;
 
 /**
  *
- *  Author:
+ *  Author: Matvey
  *  Date:   01/04/2018
  */
 
@@ -144,10 +141,17 @@ public class Solver{
                 returnPieceToPool();
                 currentBoard.get().addPiece(pieceToBePlaced);
                 System.out.println(Thread.currentThread().getName() + " " + pieceToBePlaced + " added");
-                poolOfPieces.get().remove(pieceToBePlaced);
-                possiblePiecesForSlot.remove(pieceToBePlaced);
+                if (!poolOfPieces.get().remove(pieceToBePlaced)){
+                    System.out.println("Warning, piece " + pieceToBePlaced.getPieceID() + "not in pool");
+                }
+                System.out.println(String.format("Piece %s removed from pool", pieceToBePlaced.getPieceID()));
+                if(!possiblePiecesForSlot.remove(pieceToBePlaced)){
+                    System.out.println("Warning, piece " + pieceToBePlaced.getPieceID() + "not in possible pieces");
+                }
+                System.out.println(String.format("Piece %s removed from possible pieces", pieceToBePlaced.getPieceID()));
                 currentBoard.get().stepForwardRow();
                 currentBoard.get().stepForwardColumn();
+                System.out.println(String.format("Going forward to %d%d", currentBoard.get().getRow(), currentBoard.get().getCol()));
             } else {
                 prepareStepBack(slotKey, possiblePiecesForSlot);
                 stepBack();
@@ -160,13 +164,13 @@ public class Solver{
         } else {
             System.out.println(String.format(Thread.currentThread().getName() + " Can't find solution for board %s X %s",currentBoard.get().numberOfRows(), currentBoard.get().numberOfColumns()));
         }
+        // clear pool for next thread
+        poolOfPieces.get().clear();
     }
 
     public void solvePuzzle(){
         // fixed number of threads solution
-//        ThreadPoolExecutor executor = (ThreadPoolExecutor) Executors.newFixedThreadPool(1);
-        // run threads at will solution , very fast
-        ThreadPoolExecutor executor = (ThreadPoolExecutor) Executors.newCachedThreadPool();
+        ThreadPoolExecutor executor = (ThreadPoolExecutor) Executors.newFixedThreadPool(Config.getInstance().getThreadsNumber());
         for(Board board: boards){
             executor.execute(
                     new Runnable() {
@@ -177,18 +181,18 @@ public class Solver{
                     }
             );
         }
-        // wait for threads to finish
-        while(executor.getActiveCount() != 0){
-            try {
-                Thread.sleep(1);
-            } catch (InterruptedException e) {
-                e.printStackTrace();
-            }
+
+        executor.shutdown();
+        // wait for all threads to stop
+        while (!executor.isTerminated()) {
         }
+
+        System.out.println("Finished all threads");
         if(!isPuzzleSolved.get()){
             System.out.println(Thread.currentThread().getName() + " No solution found for given pieces");
             MessageAccumulator.addMassage("Cannot solve puzzle: it seems that there is no proper solution");
         }
+        //return isPuzzleSolved.get() && validatePuzzleSolution();
     }
 
     private void prepareStepBack(String slotKey, List<PuzzlePiece> possiblePiecesForSlot) {
@@ -200,6 +204,7 @@ public class Solver{
     private void stepBack() {
         currentBoard.get().stepBackRow();
         currentBoard.get().stepBackColumn();
+        System.out.println(String.format("Going back to %d%d", currentBoard.get().getRow(), currentBoard.get().getCol()));
     }
 
     private void returnPieceToPool() {
@@ -253,45 +258,72 @@ public class Solver{
                 (sideBottom == 2 || sideBottom == piece.getSideBottom());
     }
 
+   // private void removePieceFromList()
+
     public boolean validatePuzzleSolution(){
+        Set<Integer> setOfIds = new HashSet<>();
         if (isPuzzleSolved.get()){
             int sumOfSides = 0;
             // validate rows
             for(int row = 0; row < solvedBoard.numberOfRows(); row++){
+                PuzzlePiece prevPiece = null;
                 for(int col = 0; col < solvedBoard.numberOfColumns(); col++){
                     PuzzlePiece currPiece = solvedBoard.getBoard()[row][col];
+                    if(!setOfIds.add(currPiece.getPieceID())){
+                        System.out.println(String.format("Pieces %s more then one time on board, validation failed",currPiece.getPieceID()));
+                        return false;
+                    }
                     if(currPiece != null){
                         sumOfSides += currPiece.getSideRight() + currPiece.getSideLeft();
                     } else {
+                        System.out.println(String.format("Puzzle wasn't solved, slot %d:%d is empty", row, col));
                         MessageAccumulator.addMassage(String.format("Puzzle wasn't solved, slot %d:%d is empty", row, col));
                         return false;
                     }
+                    if( prevPiece != null){
+                        if ((prevPiece.getSideRight() + currPiece.getSideLeft()) != 0){
+                            System.out.println(String.format("Pieces %s right side are not comatible with piece %s left side", prevPiece.getPieceID(), currPiece.getPieceID()));
+                            return false;
+                        }
+                    }
+                    prevPiece = currPiece;
                 }
                 if(sumOfSides != 0){
+                    System.out.println(String.format("Puzzle wasn't solved, sum of row %d is not zero", row));
                     MessageAccumulator.addMassage(String.format("Puzzle wasn't solved, sum of row %d is not zero", row));
                     return false;
                 }
             }
             // validate columns
             for(int col = 0; col < solvedBoard.numberOfColumns(); col++){
+                PuzzlePiece prevPiece = null;
                 for(int row = 0; row < solvedBoard.numberOfRows(); row++){
                     PuzzlePiece currPiece = solvedBoard.getBoard()[row][col];
                     if(currPiece != null){
                         sumOfSides += currPiece.getSideTop() + currPiece.getSideBottom();
                     } else {
+                        System.out.println(String.format("Puzzle wasn't solved, slot %d:%d is empty", row, col));
                         MessageAccumulator.addMassage(String.format("Puzzle wasn't solved, slot %d:%d is empty", row, col));
                         return false;
                     }
+                    if( prevPiece != null){
+                        if ((prevPiece.getSideBottom() + currPiece.getSideTop()) != 0){
+                            System.out.println(String.format("Pieces %s bottom side are not comatible with piece %s top side", prevPiece.getPieceID(), currPiece.getPieceID()));
+                            return false;
+                        }
+                    }
+                    prevPiece = currPiece;
                 }
                 if(sumOfSides != 0){
+                    System.out.println(String.format("Puzzle wasn't solved, sum of column %d is not zero", col));
                     MessageAccumulator.addMassage(String.format("Puzzle wasn't solved, sum of column %d is not zero", col));
                     return false;
                 }
             }
             return true;
-        } else {
-            return false;
         }
+        System.out.println("Puzzle wasn't salved at all !!!");
+        return false;
     }
 
 //    public List<PuzzlePiece> getPoolOfPieces() {

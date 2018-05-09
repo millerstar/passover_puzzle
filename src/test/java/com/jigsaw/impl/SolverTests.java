@@ -10,6 +10,12 @@ import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;
 
+
+/**
+ *    Author:  Matvey
+ *    Date:   06/04/2018
+ */
+
 public class SolverTests {
 
     public PuzzleBox createPuzzleBox (PuzzlePiece... pieces) throws WrongElementsFormat {
@@ -109,7 +115,7 @@ public class SolverTests {
         PuzzlePiece p1 = new PuzzlePiece(0, 1, 0, 0, 1);
         PuzzlePiece p2 = new PuzzlePiece(-1, 0, 0, 0, 2);
         PuzzlePiece p3 = new PuzzlePiece(0, 1, 0, 0, 3);
-        PuzzlePiece p4 = new PuzzlePiece(-1, -1, 0, 0, 4);
+        PuzzlePiece p4 = new PuzzlePiece(-1, -1, 1, 0, 4);
 
         Solver solver = new Solver(createPuzzleBox(p1, p2, p3, p4));
         solver.createPossibleBoards();
@@ -141,7 +147,7 @@ public class SolverTests {
         Solver solver = new Solver(createPuzzleBox(p1, p2, p3, p4));
         solver.createPossibleBoards();
         solver.solvePuzzle();
-        solver.getCurrentBoard()[0][0] = p4;
+        solver.getCurrentBoard()[0][0] = new PuzzlePiece(1, 1, 1, 1, 1);
         assertFalse(solver.validatePuzzleSolution());
     }
 

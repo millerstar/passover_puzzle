@@ -26,7 +26,7 @@ public class FileManager implements IPuzzleDataIO {
     }
 
     public FileManager(String fileFullPath) {
-        File outputFile = new File("src/main/resources/puzzleResultFile.txt");
+        File outputFile = new File(Config.getInstance().getOutputFilePosition());
         this.importAbsPath = Paths.get(fileFullPath);
         this.exportAbsPath = Paths.get(outputFile.getAbsolutePath());
         errorArrayList = new ArrayList<>();
