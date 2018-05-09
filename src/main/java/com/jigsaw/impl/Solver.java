@@ -161,6 +161,8 @@ public class Solver{
             System.out.println(String.format(Thread.currentThread().getName() + " Puzzle solved for board %s X %s",currentBoard.get().numberOfRows(), currentBoard.get().numberOfColumns()));
             isPuzzleSolved.compareAndSet(false, true);
             solvedBoard = currentBoard.get();
+        } else if (isPuzzleSolved.get()) {
+            System.out.println(String.format(Thread.currentThread().getName() + " Solution for board already found, giving up on %s X %s",currentBoard.get().numberOfRows(), currentBoard.get().numberOfColumns()));
         } else {
             System.out.println(String.format(Thread.currentThread().getName() + " Can't find solution for board %s X %s",currentBoard.get().numberOfRows(), currentBoard.get().numberOfColumns()));
         }

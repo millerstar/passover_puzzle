@@ -32,6 +32,7 @@ public class PuzzleManager {
             // todo move create to solvePuzzle
             solver.createPossibleBoards();
             // todo return boolean to printPuzzleResult, add validation and check that puzzle solved
+            solver.solvePuzzle();
 //            if(solver.solvePuzzle()) {
 //                fileManager.printPuzzleResult(solver.getCurrentBoard());
 //            }
