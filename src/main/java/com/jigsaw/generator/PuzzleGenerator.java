@@ -1,6 +1,7 @@
 package com.jigsaw.generator;
 
 import com.jigsaw.impl.PuzzlePiece;
+
 import java.util.*;
 
 public class PuzzleGenerator {
@@ -48,20 +49,54 @@ public class PuzzleGenerator {
     // methods
 
     /**
-     * generate random number for blending puzzle pieces result
+     * generate random number for puzzle piece     *
      *
-     * @param maxVal - last index piece in the pack
-     * @return random number according the given bounds
+     * @return random number between -1 to 1 (-1,0,1)
      */
-    private int getRandomNumber(int maxVal) {
+    private int getRandomNumber() {
         Random rand = new Random();
-        return rand.nextInt((maxVal - 1) + 1) + 1;
+        return rand.nextInt((1 + 1) + 1) - 1;
     }
+
+    public void generatePieces() {
+        int left, right, top, bottom;
+        PuzzlePiece puzzlePiece;
+        left = 0;
+        right = getRandomNumber();
+        top = 0;
+        bottom = 0;
+        puzzlePiece = new PuzzlePiece(left, right, top, bottom, 1);
+        puzzlePieces.add(puzzlePiece);
+
+        for (int i = 1; i < numOfCards; i++) {
+
+            // in case of one row
+            if (rows == 1) {
+
+                // in case of first piece on board
+                if (puzzlePieces.get(i - 1).getSideRight() != 0) {
+                    left = right * -1;
+                } else {
+                    left = 0;
+                }
+                right = getRandomNumber();
+
+
+                if (i == numOfCards - 1) {
+                    right = 0;
+                }
+                puzzlePiece = new PuzzlePiece(left, right, top, bottom, i + 1);
+                puzzlePieces.add(puzzlePiece);
+            }
+        }
+    }
+
+
 
     /**
      * blend all puzzle pieces indexes
      */
-    private void blendIndexToMap() {
+  /*  private void blendIndexToMap() {
         int newCardIndex = 0;
         for (int i = 1; i <= numOfCards; i++) {
             newCardIndex = getRandomNumber(numOfCards);
@@ -74,16 +109,15 @@ public class PuzzleGenerator {
                 puzzleIndexMap.put(i, newCardIndex);
             }
         }
-    }
-
-
+    }*/
     public static void main(String[] args) throws InterruptedException {
-        PuzzleGenerator pz = new PuzzleGenerator(4, 6, true);
-        pz.blendIndexToMap();
-
-        for (int i = 0; i < 15; i++) {
-            System.out.print(pz.getRandomNumber(7) + " ");
-        }
+        PuzzleGenerator pz = new PuzzleGenerator(1, 6, true);
+        List<PuzzlePiece> p = new ArrayList<>();
+        pz.generatePieces();
+//        PuzzleGenerator pz2 = new PuzzleGenerator();
+//        pz.blendIndexToMap();
+        p = pz.getPuzzlePieces();
+        System.out.println("tt");
 
     }
 }
