@@ -18,7 +18,8 @@ public class Solver{
     private ThreadLocal<Board> currentBoard = new ThreadLocal<>();
     private Board solvedBoard;
     private PuzzleBox puzzleBox;
-    private ThreadLocal<List<PuzzlePiece>> poolOfPieces = ThreadLocal.withInitial(ArrayList::new);
+    private List<PuzzlePiece> poolOfPieces = new ArrayList<>();
+    private Map<Shape, ArrayList<PuzzlePiece>> shapeToPieces = new HashMap<>();
     private ThreadLocal<Map<String, List<PuzzlePiece>>> slotToPieces= ThreadLocal.withInitial(HashMap::new);
     private boolean isOneRowSolutionPossible;
     private boolean isOneColumnSolutionPossible;
@@ -38,6 +39,20 @@ public class Solver{
 
     public Solver(PuzzleBox puzzleBox) {
         this.puzzleBox = puzzleBox;
+        if(puzzleBox.isRotate()){
+            this.poolOfPieces.addAll(this.puzzleBox.getAllPiecesInBoardWithRotation());
+        } else {
+            this.poolOfPieces.addAll(this.puzzleBox.getAllPiecesInBoard());
+        }
+        Collections.shuffle(poolOfPieces);
+        createShapeToPiecesMap(poolOfPieces);
+    }
+
+    private void createShapeToPiecesMap(List<PuzzlePiece> pieces) {
+        for(PuzzlePiece piece: pieces){
+            ArrayList<PuzzlePiece> currList = shapeToPieces.getOrDefault(piece.getShape(), new ArrayList<>());
+            shapeToPieces.put(piece.getShape(), currList);
+        }
     }
 
     public PuzzleBox getPuzzleBox() {
@@ -103,7 +118,6 @@ public class Solver{
     private void solveBoard(Board board){
         boolean isSolved = false;
         currentBoard.set(board);
-        poolOfPieces.get().addAll(puzzleBox.getAllPiecesInBoard());
         System.out.println(String.format(Thread.currentThread().getName() + " Starting to check board %s X %s",currentBoard.get().getBoard().length, currentBoard.get().getBoard()[0].length));
         while(true){
             if(isPuzzleSolved.get()){
@@ -122,36 +136,30 @@ public class Solver{
             }
 
             List<PuzzlePiece> possiblePiecesForSlot = slotToPieces.get().get(slotKey);
+
+            // clean bank of possible pieces from pieces with id that already on board
+            for(PuzzlePiece piece: currentBoard.get().getPiecesOnBoard()){
+                while(possiblePiecesForSlot.contains(piece)){
+                    possiblePiecesForSlot.remove(piece);
+                }
+            }
+
             if(possiblePiecesForSlot.isEmpty()){
                 prepareStepBack(slotKey, possiblePiecesForSlot);
                 stepBack();
                 continue;
             }
-            // remove piece from possible solution to prevent same piece twice on board
-            // todo extract to method or add flag to PuzzlePiece isOnBoard
-            while(!poolOfPieces.get().contains(possiblePiecesForSlot.get(0))){
-                possiblePiecesForSlot.remove(possiblePiecesForSlot.get(0));
-                if(possiblePiecesForSlot.isEmpty()){
-                    break;
-                }
-            }
 
             if (possiblePiecesForSlot.size() > 0) {
                 PuzzlePiece pieceToBePlaced = possiblePiecesForSlot.get(0);
-                returnPieceToPool();
                 currentBoard.get().addPiece(pieceToBePlaced);
-                System.out.println(Thread.currentThread().getName() + " " + pieceToBePlaced + " added");
-                if (!poolOfPieces.get().remove(pieceToBePlaced)){
-                    System.out.println("Warning, piece " + pieceToBePlaced.getPieceID() + "not in pool");
-                }
-                System.out.println(String.format("Piece %s removed from pool", pieceToBePlaced.getPieceID()));
                 if(!possiblePiecesForSlot.remove(pieceToBePlaced)){
                     System.out.println("Warning, piece " + pieceToBePlaced.getPieceID() + "not in possible pieces");
                 }
-                System.out.println(String.format("Piece %s removed from possible pieces", pieceToBePlaced.getPieceID()));
+                System.out.println(String.format(Thread.currentThread().getName() + " Piece %s removed from possible pieces", pieceToBePlaced.getPieceID()));
                 currentBoard.get().stepForwardRow();
                 currentBoard.get().stepForwardColumn();
-                System.out.println(String.format("Going forward to %d%d", currentBoard.get().getRow(), currentBoard.get().getCol()));
+                System.out.println(String.format(Thread.currentThread().getName() + " Going forward to %d%d", currentBoard.get().getRow(), currentBoard.get().getCol()));
             } else {
                 prepareStepBack(slotKey, possiblePiecesForSlot);
                 stepBack();
@@ -166,8 +174,6 @@ public class Solver{
         } else {
             System.out.println(String.format(Thread.currentThread().getName() + " Can't find solution for board %s X %s",currentBoard.get().numberOfRows(), currentBoard.get().numberOfColumns()));
         }
-        // clear pool for next thread
-        poolOfPieces.get().clear();
     }
 
     public void solvePuzzle(){
@@ -199,7 +205,7 @@ public class Solver{
 
     private void prepareStepBack(String slotKey, List<PuzzlePiece> possiblePiecesForSlot) {
         slotToPieces.get().remove(slotKey, possiblePiecesForSlot);
-        returnPieceToPool();
+//        returnPieceToPool();
         currentBoard.get().addPiece(null);
     }
 
@@ -209,12 +215,12 @@ public class Solver{
         System.out.println(String.format("Going back to %d%d", currentBoard.get().getRow(), currentBoard.get().getCol()));
     }
 
-    private void returnPieceToPool() {
-        if(currentBoard.get().currentSlot() != null){
-            poolOfPieces.get().add(currentBoard.get().currentSlot());
-            System.out.println(Thread.currentThread().getName() + " " + currentBoard.get().currentSlot() + " returned to poolOfPieces");
-        }
-    }
+//    private void returnPieceToPool() {
+//        if(currentBoard.get().currentSlot() != null){
+//            poolOfPieces.get().add(currentBoard.get().currentSlot());
+//            System.out.println(Thread.currentThread().getName() + " " + currentBoard.get().currentSlot() + " returned to poolOfPieces");
+//        }
+//    }
 
     private List<PuzzlePiece> piecesForSlot() {
         List<PuzzlePiece> ret = new ArrayList<>();
@@ -244,7 +250,7 @@ public class Solver{
 
         }
 
-        for(PuzzlePiece piece: poolOfPieces.get()){
+        for(PuzzlePiece piece: poolOfPieces){
             if(isPieceFit(piece, sideLeft, sideTop, sideRight, sideBottom)){
                 ret.add(piece);
             }
@@ -322,6 +328,7 @@ public class Solver{
                     return false;
                 }
             }
+            System.out.println(solvedBoard.toString());
             return true;
         }
         System.out.println("Puzzle wasn't salved at all !!!");

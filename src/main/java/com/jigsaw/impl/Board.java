@@ -1,6 +1,9 @@
 package com.jigsaw.impl;
 
 
+import java.util.Arrays;
+import java.util.HashSet;
+import java.util.Set;
 
 /**
  *
@@ -17,6 +20,7 @@ public class Board {
     private int col;
     private int rowLength;
     private int colLength;
+    private Set<PuzzlePiece> piecesOnBoard = new HashSet<>();
 
 
 
@@ -29,6 +33,9 @@ public class Board {
         colLength = board[0].length;
     }
 
+    public Set<PuzzlePiece> getPiecesOnBoard() {
+        return piecesOnBoard;
+    }
     public PuzzlePiece[][] getBoard() {
         return board;
     }
@@ -50,7 +57,16 @@ public class Board {
     }
 
     public void addPiece(PuzzlePiece pieceToBePlaced) {
-        board[row][col] = pieceToBePlaced;
+        if(currentSlot() != null ){
+            piecesOnBoard.remove(currentSlot());
+            System.out.println(String.format(Thread.currentThread().getName() + " Piece %s removed from board", currentSlot().getPieceID()));
+        }
+        setCurrenSlot(pieceToBePlaced);
+        // could be null if stepping back
+        if( currentSlot() != null){
+            piecesOnBoard.add(pieceToBePlaced);
+            System.out.println(String.format(Thread.currentThread().getName() + " Piece %s added to board", board[row][col].getPieceID()));
+        }
     }
 
     public int numberOfRows() {
@@ -63,6 +79,10 @@ public class Board {
 
     public PuzzlePiece currentSlot() {
         return board[row][col];
+    }
+
+    private void setCurrenSlot(PuzzlePiece puzzlePiece){
+        board[row][col] = puzzlePiece;
     }
 
     public void stepBackColumn() {
@@ -122,6 +142,24 @@ public class Board {
             return 0;
         }
         return board[getRow()][getCol() - 1].getSideRight();
+    }
 
+    @Override
+    public String toString() {
+        StringBuilder ret = new StringBuilder();
+        for(int row = 0; row < numberOfRows(); row++){
+            PuzzlePiece prevPiece = null;
+            for(int col = 0; col < numberOfColumns(); col++){
+                PuzzlePiece currPiece = board[row][col];
+                if(currPiece.getRotationDegree() != 0){
+                    ret.append("[" +currPiece.getPieceID() + "]");
+                } else {
+                    ret.append(currPiece.getPieceID());
+                }
+                ret.append(" ");
+            }
+            ret.append("\n");
+        }
+        return ret.toString();
     }
 }

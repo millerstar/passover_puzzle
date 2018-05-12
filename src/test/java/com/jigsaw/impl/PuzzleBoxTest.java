@@ -118,6 +118,7 @@ public class PuzzleBoxTest {
     @Test
     @DisplayName("Checks rotated pieces list size when given different pieces shapes ")
     public void checkIf() throws WrongElementsFormat {
+        // rotation in Config must be false
         //Expected: no rotations
         PuzzlePiece rectanglePiece = new PuzzlePiece(0,0,0,0,1);
         //Expected: no rotations
@@ -144,12 +145,66 @@ public class PuzzleBoxTest {
 
         assertTrue(pieces.size()==5);
         assertTrue(piecesWithRotation.size()==10);
-
-
-
-
-
-
     }
+
+    @Test
+    public void rotateOnePieceOneTime() throws WrongElementsFormat {
+        //Expected: 3 rotations
+        // rotation in Config must be false
+        PuzzlePiece trianglePiece = new PuzzlePiece(-1,-1,0,0,3);
+        List<PuzzlePiece> pieces = new ArrayList<>();
+        pieces.add(trianglePiece);
+        PuzzleBox box1 = new PuzzleBox(pieces);
+        PuzzlePiece trianglePieceRotated90 = new PuzzlePiece(0,0,-1,-1,3);
+        trianglePieceRotated90.setRotationDegree(90);
+        List<PuzzlePiece> piecesWithRotation = box1.getRotatedPiecesNewList();
+
+        // remove pieces that should be in list
+        piecesWithRotation.removeIf(e -> e.isEqualByAllParams(trianglePiece));
+        piecesWithRotation.removeIf(e -> e.isEqualByAllParams(trianglePieceRotated90));
+
+        assertTrue(piecesWithRotation.size() == 0);
+    }
+
+    @Test
+    public void rotateOnePiece3Times() throws WrongElementsFormat {
+        //Expected: 3 rotations
+        // rotation in Config must be false
+        PuzzlePiece trianglePiece = new PuzzlePiece(-1,1,0,0,3);
+        List<PuzzlePiece> pieces = new ArrayList<>();
+        pieces.add(trianglePiece);
+        PuzzleBox box1 = new PuzzleBox(pieces);
+        PuzzlePiece trianglePiece90 = new PuzzlePiece(0,0,-1,1,3);
+        trianglePiece90.setRotationDegree(90);
+        PuzzlePiece trianglePiece180 = new PuzzlePiece(1,-1,0,0,3);
+        trianglePiece180.setRotationDegree(180);
+        PuzzlePiece trianglePiece270 = new PuzzlePiece(0,0,1,-1,3);
+        trianglePiece270.setRotationDegree(270);
+        List<PuzzlePiece> piecesWithRotation = box1.getRotatedPiecesNewList();
+
+        // remove pieces that should be in list
+        piecesWithRotation.removeIf(e -> e.isEqualByAllParams(trianglePiece90));
+        piecesWithRotation.removeIf(e -> e.isEqualByAllParams(trianglePiece180));
+        piecesWithRotation.removeIf(e -> e.isEqualByAllParams(trianglePiece270));
+
+        // should contain only original piece
+        assertTrue(piecesWithRotation.size() == 1);
+    }
+
+    @Test
+    public void rotateOnePieceAllSidesEquals() throws WrongElementsFormat {
+        //Expected: 0 rotations
+        // rotation in Config must be false
+        PuzzlePiece trianglePiece = new PuzzlePiece(-1,-1,-1,-1,3);
+        List<PuzzlePiece> pieces = new ArrayList<>();
+        pieces.add(trianglePiece);
+        PuzzleBox box1 = new PuzzleBox(pieces);
+        List<PuzzlePiece> piecesWithRotation = box1.getRotatedPiecesNewList();
+
+        piecesWithRotation.removeIf(e -> e.isEqualByAllParams(trianglePiece));
+
+        assertTrue(piecesWithRotation.size() == 0);
+    }
+
 
     }

@@ -134,7 +134,12 @@ public class FileManager implements IPuzzleDataIO {
             PuzzlePiece[][] board = solver.getCurrentBoard();
             for (int i = 0; i < board.length; i++) {
                 for (int j = 0; j < board[i].length; j++) {
-                    printToFile(board[i][j].getPieceID() + " ");
+                    PuzzlePiece currPiece = board[i][j];
+                    if(currPiece.getRotationDegree() != 0){
+                        printToFile("[" + currPiece.getPieceID() + "] ");
+                    } else {
+                        printToFile(currPiece.getPieceID() + " ");
+                    }
                 }
                 printToFile("\n");
             }

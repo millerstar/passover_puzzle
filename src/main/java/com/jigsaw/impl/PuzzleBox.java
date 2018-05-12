@@ -18,12 +18,16 @@ public class PuzzleBox {
     private List<PuzzlePiece> femaleRightLeftPieces = new ArrayList<>();
     private List<PuzzlePiece> allPiecesInBoard ;
     private List<PuzzlePiece> allPiecesInBoardWithRotation = new ArrayList<>();
+    private boolean rotate = Config.getInstance().isRotate();
 
     private int numOfPieces;
 
     //C'tor overloading - with default rotation = 0
     public PuzzleBox(List<PuzzlePiece> pieces) throws WrongElementsFormat {
         this.allPiecesInBoard = pieces;
+        if (this.rotate){
+            getRotatedPiecesNewList();
+        }
         straightRightLeftPieces = getStraightPiecesGroup();
         maleRightLeftPieces = getMalePiecesGroup();
         femaleRightLeftPieces = getFemalePiecesGroup();
@@ -163,30 +167,36 @@ public class PuzzleBox {
             allPiecesInBoardWithRotation.add(piece);
 
             pieceOptionalRotations = piece.getPieceOptionalRotations(piece);
+            PuzzlePiece currPiece = piece;
             for (int i=0;i<pieceOptionalRotations;i++){
-                PuzzlePiece rotatedPiece = piece.getNewRotetedPuzzlePiece();
+                PuzzlePiece rotatedPiece = currPiece.getNewRotetedPuzzlePiece();
                 allPiecesInBoardWithRotation.add(rotatedPiece);
+                currPiece = rotatedPiece;
             }
-
         }
 
         return allPiecesInBoardWithRotation;
-        }
+    }
 
-        public int countNumOfPiecesWithTheSameID(int ID){
-        int numOfPiecesWithTheSameID = 0;
+    public int countNumOfPiecesWithTheSameID(int ID){
+    int numOfPiecesWithTheSameID = 0;
 
-        for (PuzzlePiece piece: allPiecesInBoardWithRotation ) {
-                if (piece.getPieceID() == ID){
-                    numOfPiecesWithTheSameID++;
-                }
+    for (PuzzlePiece piece: allPiecesInBoardWithRotation ) {
+            if (piece.getPieceID() == ID){
+                numOfPiecesWithTheSameID++;
             }
-
-        return numOfPiecesWithTheSameID;
         }
 
+    return numOfPiecesWithTheSameID;
+    }
 
+    public boolean isRotate() {
+        return rotate;
+    }
 
+    public List<PuzzlePiece> getAllPiecesInBoardWithRotation() {
+        return allPiecesInBoardWithRotation;
+    }
 }
 
 
