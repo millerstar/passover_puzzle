@@ -11,7 +11,7 @@ import java.util.concurrent.atomic.AtomicBoolean;
  *  Author: Matvey
  *  Date:   01/04/2018
  */
-
+// conatain logic for puzzle solution and manage threads
 public class Solver{
 
     private List<Board> boards = new ArrayList<>(); // todo add class for board, add members that save prev and current possition
@@ -47,7 +47,7 @@ public class Solver{
         Collections.shuffle(poolOfPieces);
         createShapeToPiecesMap(poolOfPieces);
     }
-
+    
     private void createShapeToPiecesMap(List<PuzzlePiece> pieces) {
         for(PuzzlePiece piece: pieces){
             List<PuzzlePiece> currList = shapeToPieces.getOrDefault(piece.getShape(), new ArrayList<>());
@@ -60,6 +60,7 @@ public class Solver{
         return puzzleBox;
     }
 
+    // create all possible boards from given not rotated pieces
     public void createPossibleBoards(){
         int numOfPieces = puzzleBox.getAllPiecesInBoard().size();
         oneLineSolutionsChecker();
@@ -116,6 +117,7 @@ public class Solver{
         }
     }
 
+    // seek for solution for concrete board
     private void solveBoard(Board board){
         boolean isSolved = false;
         currentBoard.set(board);
@@ -168,6 +170,7 @@ public class Solver{
         }
     }
 
+    // manage threads
     public void solvePuzzle(){
         // fixed number of threads solution
         ThreadPoolExecutor executor = (ThreadPoolExecutor) Executors.newFixedThreadPool(Config.getInstance().getThreadsNumber());
@@ -206,6 +209,7 @@ public class Solver{
         System.out.println(String.format("Going back to %d%d", currentBoard.get().getRow(), currentBoard.get().getCol()));
     }
 
+    // return list of pieces that fit current board slot
     private List<Shape> piecesForSlot() {
         List<Shape> ret = new ArrayList<>();
         int sideLeft, sideTop, sideRight, sideBottom;
@@ -242,6 +246,7 @@ public class Solver{
         return ret;
     }
 
+    // check if given shape fit for given sides
     private boolean isPieceFit(Shape shape, int sideLeft, int sideTop, int sideRight, int sideBottom) {
         return  (sideLeft == 2 || sideLeft == shape.getSideLeft()) &&
                 (sideTop == 2 || sideTop == shape.getSideTop()) &&
@@ -249,6 +254,8 @@ public class Solver{
                 (sideBottom == 2 || sideBottom == shape.getSideBottom());
     }
 
+    // todo slice to smaller validation methods
+    // validate that solved puzzle are valid : all pieces in place, rows and columns sum of sides are zero, no double id's on board
     public boolean validatePuzzleSolution(){
         Set<Integer> setOfIds = new HashSet<>();
         if (isPuzzleSolved.get()){
@@ -269,6 +276,7 @@ public class Solver{
                         MessageAccumulator.addMassage(String.format("Puzzle wasn't solved, slot %d:%d is empty", row, col));
                         return false;
                     }
+                    // validate bounds are 0
                     if( prevPiece != null){
                         if ((prevPiece.getSideRight() + currPiece.getSideLeft()) != 0){
                             System.out.println(String.format("Pieces %s right side are not comatible with piece %s left side", prevPiece.getPieceID(), currPiece.getPieceID()));
@@ -295,6 +303,7 @@ public class Solver{
                         MessageAccumulator.addMassage(String.format("Puzzle wasn't solved, slot %d:%d is empty", row, col));
                         return false;
                     }
+                    // validate bounds are 0
                     if( prevPiece != null){
                         if ((prevPiece.getSideBottom() + currPiece.getSideTop()) != 0){
                             System.out.println(String.format("Pieces %s bottom side are not comatible with piece %s top side", prevPiece.getPieceID(), currPiece.getPieceID()));

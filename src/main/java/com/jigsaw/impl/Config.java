@@ -5,6 +5,7 @@ package com.jigsaw.impl;
  *  Author:  Matvey
  *  Date:   29/04/2018
  */
+// hold configuration for project, return default config if config from cmd wasn't set
 public class Config {
 
     private String inputFilePosition;

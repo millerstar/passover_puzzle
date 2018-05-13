@@ -9,7 +9,7 @@ import java.util.*;
  *  Date:   06/04/2018
  */
 
-
+// representation for concrete puzzle board, contain methods for working with borad and stash of pieces (piecesOnBoard) that already on board
 public class Board {
 
     String id;

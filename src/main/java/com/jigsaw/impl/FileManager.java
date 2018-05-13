@@ -8,6 +8,9 @@ import java.nio.charset.Charset;
 import java.nio.file.*;
 import java.util.*;
 
+/**
+ * Author: Ilan
+ */
 //TODO interface
 public class FileManager implements IPuzzleDataIO {
 

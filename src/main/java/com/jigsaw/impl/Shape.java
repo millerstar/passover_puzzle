@@ -2,6 +2,10 @@ package com.jigsaw.impl;
 
 import java.util.Objects;
 
+
+/**
+ * Author: Matvey
+ */
 public class Shape {
     private int sideLeft, sideRight, sideTop, sideBottom;
 

@@ -13,9 +13,6 @@ import java.util.List;
 
 // this class contain pieces sorted by place they should take
 public class PuzzleBox {
-    private List<PuzzlePiece> straightRightLeftPieces = new ArrayList<>();
-    private List<PuzzlePiece> maleRightLeftPieces = new ArrayList<>();
-    private List<PuzzlePiece> femaleRightLeftPieces = new ArrayList<>();
     private List<PuzzlePiece> allPiecesInBoard ;
     private List<PuzzlePiece> allPiecesInBoardWithRotation = new ArrayList<>();
     private boolean rotate = Config.getInstance().isRotate();
@@ -28,9 +25,6 @@ public class PuzzleBox {
         if (this.rotate){
             getRotatedPiecesNewList();
         }
-        straightRightLeftPieces = getStraightPiecesGroup();
-        maleRightLeftPieces = getMalePiecesGroup();
-        femaleRightLeftPieces = getFemalePiecesGroup();
         numOfPieces = pieces.size();
         if (!allPiecesInBoxAreValid()) {
             throw new WrongElementsFormat();
