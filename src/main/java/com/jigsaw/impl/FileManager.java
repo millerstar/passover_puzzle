@@ -26,7 +26,7 @@ public class FileManager implements IPuzzleDataIO {
     }
 
     public FileManager(String fileFullPath) {
-        File outputFile = new File("src/main/resources/puzzleResultFile.txt");
+        File outputFile = new File(Config.getInstance().getOutputFilePosition());
         this.importAbsPath = Paths.get(fileFullPath);
         this.exportAbsPath = Paths.get(outputFile.getAbsolutePath());
         errorArrayList = new ArrayList<>();
@@ -130,11 +130,16 @@ public class FileManager implements IPuzzleDataIO {
 
     @Override
     public void printPuzzleResult(Solver solver) {
-        if (solver.isPuzzleSolved && solver.validatePuzzleSolution()) {
+        if (solver.isPuzzleSolved.get() && solver.validatePuzzleSolution()) {
             PuzzlePiece[][] board = solver.getCurrentBoard();
             for (int i = 0; i < board.length; i++) {
                 for (int j = 0; j < board[i].length; j++) {
-                    printToFile(board[i][j].getPieceID() + " ");
+                    PuzzlePiece currPiece = board[i][j];
+                    if(currPiece.getRotationDegree() != 0){
+                        printToFile("[" + currPiece.getPieceID() + "] ");
+                    } else {
+                        printToFile(currPiece.getPieceID() + " ");
+                    }
                 }
                 printToFile("\n");
             }
