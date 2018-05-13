@@ -19,8 +19,8 @@ public class Solver{
     private Board solvedBoard;
     private PuzzleBox puzzleBox;
     private List<PuzzlePiece> poolOfPieces = new ArrayList<>();
-    private Map<Shape, ArrayList<PuzzlePiece>> shapeToPieces = new HashMap<>();
-    private ThreadLocal<Map<String, List<PuzzlePiece>>> slotToPieces= ThreadLocal.withInitial(HashMap::new);
+    private Map<Shape, List<PuzzlePiece>> shapeToPieces = new HashMap<>();
+    private ThreadLocal<Map<String, List<Shape>>> slotToPieces= ThreadLocal.withInitial(HashMap::new);
     private boolean isOneRowSolutionPossible;
     private boolean isOneColumnSolutionPossible;
     public AtomicBoolean isPuzzleSolved = new AtomicBoolean(false);
@@ -50,7 +50,8 @@ public class Solver{
 
     private void createShapeToPiecesMap(List<PuzzlePiece> pieces) {
         for(PuzzlePiece piece: pieces){
-            ArrayList<PuzzlePiece> currList = shapeToPieces.getOrDefault(piece.getShape(), new ArrayList<>());
+            List<PuzzlePiece> currList = shapeToPieces.getOrDefault(piece.getShape(), new ArrayList<>());
+            currList.add(piece);
             shapeToPieces.put(piece.getShape(), currList);
         }
     }
@@ -135,14 +136,7 @@ public class Solver{
                 slotToPieces.get().put(slotKey, piecesForSlot());
             }
 
-            List<PuzzlePiece> possiblePiecesForSlot = slotToPieces.get().get(slotKey);
-
-            // clean bank of possible pieces from pieces with id that already on board
-            for(PuzzlePiece piece: currentBoard.get().getPiecesOnBoard()){
-                while(possiblePiecesForSlot.contains(piece)){
-                    possiblePiecesForSlot.remove(piece);
-                }
-            }
+            List<Shape> possiblePiecesForSlot = slotToPieces.get().get(slotKey);
 
             if(possiblePiecesForSlot.isEmpty()){
                 prepareStepBack(slotKey, possiblePiecesForSlot);
@@ -150,20 +144,18 @@ public class Solver{
                 continue;
             }
 
-            if (possiblePiecesForSlot.size() > 0) {
-                PuzzlePiece pieceToBePlaced = possiblePiecesForSlot.get(0);
-                currentBoard.get().addPiece(pieceToBePlaced);
-                if(!possiblePiecesForSlot.remove(pieceToBePlaced)){
-                    System.out.println("Warning, piece " + pieceToBePlaced.getPieceID() + "not in possible pieces");
+            do{
+                Shape shapeToBePlaced = possiblePiecesForSlot.get(0);
+                if (!currentBoard.get().addPiece(shapeToPieces.get(shapeToBePlaced))){
+                    possiblePiecesForSlot.remove(shapeToBePlaced);
+                } else {
+                    possiblePiecesForSlot.remove(shapeToBePlaced);
+                    currentBoard.get().stepForwardRow();
+                    currentBoard.get().stepForwardColumn();
+                    System.out.println(String.format(Thread.currentThread().getName() + " Going forward to %d%d", currentBoard.get().getRow(), currentBoard.get().getCol()));
+                    break;
                 }
-                System.out.println(String.format(Thread.currentThread().getName() + " Piece %s removed from possible pieces", pieceToBePlaced.getPieceID()));
-                currentBoard.get().stepForwardRow();
-                currentBoard.get().stepForwardColumn();
-                System.out.println(String.format(Thread.currentThread().getName() + " Going forward to %d%d", currentBoard.get().getRow(), currentBoard.get().getCol()));
-            } else {
-                prepareStepBack(slotKey, possiblePiecesForSlot);
-                stepBack();
-            }
+            } while (possiblePiecesForSlot.size() > 0);
         }
         if(isSolved){
             System.out.println(String.format(Thread.currentThread().getName() + " Puzzle solved for board %s X %s",currentBoard.get().numberOfRows(), currentBoard.get().numberOfColumns()));
@@ -203,9 +195,8 @@ public class Solver{
         //return isPuzzleSolved.get() && validatePuzzleSolution();
     }
 
-    private void prepareStepBack(String slotKey, List<PuzzlePiece> possiblePiecesForSlot) {
+    private void prepareStepBack(String slotKey, List<Shape> possiblePiecesForSlot) {
         slotToPieces.get().remove(slotKey, possiblePiecesForSlot);
-//        returnPieceToPool();
         currentBoard.get().addPiece(null);
     }
 
@@ -215,15 +206,8 @@ public class Solver{
         System.out.println(String.format("Going back to %d%d", currentBoard.get().getRow(), currentBoard.get().getCol()));
     }
 
-//    private void returnPieceToPool() {
-//        if(currentBoard.get().currentSlot() != null){
-//            poolOfPieces.get().add(currentBoard.get().currentSlot());
-//            System.out.println(Thread.currentThread().getName() + " " + currentBoard.get().currentSlot() + " returned to poolOfPieces");
-//        }
-//    }
-
-    private List<PuzzlePiece> piecesForSlot() {
-        List<PuzzlePiece> ret = new ArrayList<>();
+    private List<Shape> piecesForSlot() {
+        List<Shape> ret = new ArrayList<>();
         int sideLeft, sideTop, sideRight, sideBottom;
         if( currentBoard.get().getRow() == 0 && currentBoard.get().getCol() == 0 && currentBoard.get().currentSlot() == null){
             sideLeft = 0;
@@ -250,23 +234,20 @@ public class Solver{
 
         }
 
-        for(PuzzlePiece piece: poolOfPieces){
-            if(isPieceFit(piece, sideLeft, sideTop, sideRight, sideBottom)){
-                ret.add(piece);
+        for(Shape shape: shapeToPieces.keySet()){
+            if(isPieceFit(shape, sideLeft, sideTop, sideRight, sideBottom)){
+                ret.add(shape);
             }
         }
         return ret;
     }
 
-    // todo fake piece object, add compare to PuzzlePiec
-    private boolean isPieceFit(PuzzlePiece piece, int sideLeft, int sideTop, int sideRight, int sideBottom) {
-        return  (sideLeft == 2 || sideLeft == piece.getSideLeft()) &&
-                (sideTop == 2 || sideTop == piece.getSideTop()) &&
-                (sideRight == 2 || sideRight == piece.getSideRight()) &&
-                (sideBottom == 2 || sideBottom == piece.getSideBottom());
+    private boolean isPieceFit(Shape shape, int sideLeft, int sideTop, int sideRight, int sideBottom) {
+        return  (sideLeft == 2 || sideLeft == shape.getSideLeft()) &&
+                (sideTop == 2 || sideTop == shape.getSideTop()) &&
+                (sideRight == 2 || sideRight == shape.getSideRight()) &&
+                (sideBottom == 2 || sideBottom == shape.getSideBottom());
     }
-
-   // private void removePieceFromList()
 
     public boolean validatePuzzleSolution(){
         Set<Integer> setOfIds = new HashSet<>();

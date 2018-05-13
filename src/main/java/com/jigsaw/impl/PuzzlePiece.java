@@ -50,7 +50,7 @@ public class PuzzlePiece {
     @Override
     public int hashCode() {
 
-        return Objects.hash(getShape(), getPieceID(), getRotationDegree(), isIdPieceOnTheBoard());
+        return Objects.hash(getShape(), getPieceID(), getRotationDegree());
     }
 
     public int getSideLeft() {

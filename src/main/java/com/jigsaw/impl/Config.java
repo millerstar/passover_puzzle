@@ -21,7 +21,7 @@ public class Config {
             // creaete default config
             config.inputFilePosition = "src\\main\\resources\\puzzlePiecesFile.txt";
             config.outputFilePosition = "src\\main\\resources\\puzzleResultFile.txt";
-            config.rotate = false;
+            config.rotate = true;
             config.threadsNumber = 4;
             isConfigExist = true;
             return config;

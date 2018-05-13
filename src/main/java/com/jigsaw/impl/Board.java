@@ -1,9 +1,7 @@
 package com.jigsaw.impl;
 
 
-import java.util.Arrays;
-import java.util.HashSet;
-import java.util.Set;
+import java.util.*;
 
 /**
  *
@@ -20,7 +18,7 @@ public class Board {
     private int col;
     private int rowLength;
     private int colLength;
-    private Set<PuzzlePiece> piecesOnBoard = new HashSet<>();
+    private List<PuzzlePiece> piecesOnBoard = new ArrayList<>();
 
 
 
@@ -33,7 +31,7 @@ public class Board {
         colLength = board[0].length;
     }
 
-    public Set<PuzzlePiece> getPiecesOnBoard() {
+    public List<PuzzlePiece> getPiecesOnBoard() {
         return piecesOnBoard;
     }
     public PuzzlePiece[][] getBoard() {
@@ -56,17 +54,27 @@ public class Board {
         this.col = col;
     }
 
-    public void addPiece(PuzzlePiece pieceToBePlaced) {
-        if(currentSlot() != null ){
+    // return false if list don't conatain pieces that could be placed on board
+    public boolean addPiece(List<PuzzlePiece> piecesToBePlaced) {
+        // step back action, remove piece from slot and set slot to primary position
+        if (piecesToBePlaced == null){
             piecesOnBoard.remove(currentSlot());
-            System.out.println(String.format(Thread.currentThread().getName() + " Piece %s removed from board", currentSlot().getPieceID()));
+            setCurrenSlot(null);
+            return true;
         }
-        setCurrenSlot(pieceToBePlaced);
-        // could be null if stepping back
-        if( currentSlot() != null){
-            piecesOnBoard.add(pieceToBePlaced);
-            System.out.println(String.format(Thread.currentThread().getName() + " Piece %s added to board", board[row][col].getPieceID()));
+        for(PuzzlePiece piece: piecesToBePlaced){
+            if(!piecesOnBoard.contains(piece)){
+                if(currentSlot() != null ){
+                    piecesOnBoard.remove(currentSlot());
+                    System.out.println(String.format(Thread.currentThread().getName() + " Piece %s removed from board", currentSlot()));
+                }
+                setCurrenSlot(piece);
+                piecesOnBoard.add(piece);
+                System.out.println(String.format(Thread.currentThread().getName() + " Piece %s added to board", board[row][col]));
+                return true;
+            }
         }
+        return false;
     }
 
     public int numberOfRows() {
