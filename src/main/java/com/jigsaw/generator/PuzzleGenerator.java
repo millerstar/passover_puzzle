@@ -24,18 +24,6 @@ public class PuzzleGenerator {
         puzzleIndexMap = new HashMap<>();
     }
 
-    // default constructor - temp, test simple case
-    public PuzzleGenerator() {
-        this.rows = 2;
-        this.columns = 2;
-        this.isValidPuzzle = true;
-        this.numOfCards = rows * columns;
-        puzzlePieces = new ArrayList<>();
-        puzzleIndexMap = new HashMap<>();
-    }
-
-    // getter
-
     /**
      * get valid puzzle pieces
      *
@@ -64,16 +52,20 @@ public class PuzzleGenerator {
         left = 0;
         right = getRandomNumber();
         top = 0;
-        bottom = 0;
+        if (rows == 1) {
+            bottom = 0;
+        } else {
+            bottom = getRandomNumber();
+        }
+        // create the first puzzle piece
         puzzlePiece = new PuzzlePiece(left, right, top, bottom, 1);
         puzzlePieces.add(puzzlePiece);
 
         for (int i = 1; i < numOfCards; i++) {
 
-            // in case of one row
+            // in case of one row puzzle
             if (rows == 1) {
-
-                // in case of first piece on board
+                // find left mach for the next piece
                 if (puzzlePieces.get(i - 1).getSideRight() != 0) {
                     left = right * -1;
                 } else {
@@ -81,43 +73,81 @@ public class PuzzleGenerator {
                 }
                 right = getRandomNumber();
 
-
+                // in case of last piece
                 if (i == numOfCards - 1) {
                     right = 0;
                 }
                 puzzlePiece = new PuzzlePiece(left, right, top, bottom, i + 1);
                 puzzlePieces.add(puzzlePiece);
+                // in case of multi rows puzzle
+            } else {
+                // first line in multiple rows puzzle
+                if (i < columns) {
+                    if (puzzlePieces.get(i - 1).getSideRight() != 0) {
+                        left = right * -1;
+                    } else {
+                        left = 0;
+                    }
+                    right = getRandomNumber();
+                    bottom = getRandomNumber();
+
+                    // in case of last piece in a row
+                    if (((i + 1) % columns) == 0) {
+                        right = 0;
+                    }
+                    puzzlePiece = new PuzzlePiece(left, right, top, bottom, i + 1);
+                    puzzlePieces.add(puzzlePiece);
+                }
+                // in case of last row
+                else if ((i >= (rows - 1) * columns) && (i < numOfCards)) {
+                    if (puzzlePieces.get(i - 1).getSideRight() != 0) {
+                        left = right * -1;
+                    } else {
+                        left = 0;
+                    }
+                    right = getRandomNumber();
+                    if (puzzlePieces.get(i - columns).getSideBottom() != 0) {
+                        top = puzzlePieces.get(i - columns).getSideBottom() * -1;
+                    } else {
+                        top = 0;
+                    }
+                    bottom = 0;
+                    // in case of last piece
+                    if (i == numOfCards - 1) {
+                        right = 0;
+                    }
+                    puzzlePiece = new PuzzlePiece(left, right, top, bottom, i + 1);
+                    puzzlePieces.add(puzzlePiece);
+                // in case of middle row
+                } else {
+                    if (puzzlePieces.get(i - 1).getSideRight() != 0) {
+                        left = right * -1;
+                    } else {
+                        left = 0;
+                    }
+                    right = getRandomNumber();
+                    if (puzzlePieces.get(i - columns).getSideBottom() != 0) {
+                        top = puzzlePieces.get(i - columns).getSideBottom() * -1;
+                    } else {
+                        top = 0;
+                    }
+                    bottom = getRandomNumber();
+                    // in case of last piece in a row
+                    if (((i + 1) % columns) == 0) {
+                        right = 0;
+                    }
+                    puzzlePiece = new PuzzlePiece(left, right, top, bottom, i + 1);
+                    puzzlePieces.add(puzzlePiece);
+                }
             }
         }
     }
 
-
-
-    /**
-     * blend all puzzle pieces indexes
-     */
-  /*  private void blendIndexToMap() {
-        int newCardIndex = 0;
-        for (int i = 1; i <= numOfCards; i++) {
-            newCardIndex = getRandomNumber(numOfCards);
-            if (!puzzleIndexMap.containsValue(newCardIndex)) {
-                puzzleIndexMap.put(i, newCardIndex);
-            } else {
-                while (puzzleIndexMap.containsValue(newCardIndex)) {
-                    newCardIndex = getRandomNumber(numOfCards);
-                }
-                puzzleIndexMap.put(i, newCardIndex);
-            }
-        }
-    }*/
     public static void main(String[] args) throws InterruptedException {
-        PuzzleGenerator pz = new PuzzleGenerator(1, 6, true);
+        PuzzleGenerator pz = new PuzzleGenerator(5, 5, true);
         List<PuzzlePiece> p = new ArrayList<>();
         pz.generatePieces();
-//        PuzzleGenerator pz2 = new PuzzleGenerator();
-//        pz.blendIndexToMap();
         p = pz.getPuzzlePieces();
-        System.out.println("tt");
-
+//        System.out.println("cool");
     }
 }
