@@ -104,7 +104,6 @@ public class PuzzleBoxTest {
     public void createRotatedPieceNegativeTest() throws WrongElementsFormat {
         List <PuzzlePiece> pieces = new ArrayList<>();
         PuzzlePiece piece1 = new PuzzlePiece(0,1,1,-1,1);
-        //PuzzlePiece piece1RotatedShouldNotBeInBox = new PuzzlePiece(1,1,0,1,20);
 
         pieces.add(piece1);
 
@@ -117,7 +116,7 @@ public class PuzzleBoxTest {
     //PASS
     @Test
     @DisplayName("Checks rotated pieces list size when given different pieces shapes ")
-    public void checkIf() throws WrongElementsFormat {
+    public void checkRotation() throws WrongElementsFormat {
         // rotation in Config must be false
         //Expected: no rotations
         PuzzlePiece rectanglePiece = new PuzzlePiece(0,0,0,0,1);
@@ -205,6 +204,18 @@ public class PuzzleBoxTest {
 
         assertTrue(piecesWithRotation.size() == 0);
     }
+
+//Pass
+    @Test
+    public void ETETest() throws WrongElementsFormat {
+        PuzzlePiece trianglePiece = new PuzzlePiece(-1,-1,0,0,3);
+        List<PuzzlePiece> pieces = new ArrayList<>();
+        pieces.add(trianglePiece);
+        PuzzleBox box1 = new PuzzleBox(pieces);
+        assertTrue(box1.allPiecesInBoxAreValid());
+
+    }
+
 
 
     }
