@@ -30,6 +30,11 @@ public class FileManager implements IPuzzleDataIO {
 
     public FileManager(String fileFullPath) {
         File outputFile = new File(Config.getInstance().getOutputFilePosition());
+        try {
+            outputFile.createNewFile();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
         this.importAbsPath = Paths.get(fileFullPath);
         this.exportAbsPath = Paths.get(outputFile.getAbsolutePath());
         errorArrayList = new ArrayList<>();
@@ -139,7 +144,7 @@ public class FileManager implements IPuzzleDataIO {
                 for (int j = 0; j < board[i].length; j++) {
                     PuzzlePiece currPiece = board[i][j];
                     if(currPiece.getRotationDegree() != 0){
-                        printToFile("[" + currPiece.getPieceID() + "] ");
+                        printToFile(currPiece.getPieceID() + " [" +  currPiece.getRotationDegree()+ "] ");
                     } else {
                         printToFile(currPiece.getPieceID() + " ");
                     }

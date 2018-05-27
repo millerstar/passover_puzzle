@@ -47,7 +47,7 @@ public class Solver{
         Collections.shuffle(poolOfPieces);
         createShapeToPiecesMap(poolOfPieces);
     }
-    
+
     private void createShapeToPiecesMap(List<PuzzlePiece> pieces) {
         for(PuzzlePiece piece: pieces){
             List<PuzzlePiece> currList = shapeToPieces.getOrDefault(piece.getShape(), new ArrayList<>());

@@ -20,7 +20,7 @@ public class PuzzleManager {
     @Parameter(names = "-output", description = "Mandatory - position of the puzzle output file (for solution or errors), default in resources puzzleResultFile.txt")
     private String output = "src\\main\\resources\\puzzleResultFile.txt";
 
-    @Parameter(names = "-rotate", description = "Optional - indicating whether the puzzle pieces can be rotated, default false", arity = 1)
+    @Parameter(names = "-rotate", description = "Optional - indicating whether the puzzle pieces can be rotated, default false")
     private boolean rotate = false;
 
     public void findSolutionToPuzzle(String fileFullPath) throws IOException {
