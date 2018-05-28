@@ -9,6 +9,7 @@ import java.io.IOException;
 *   Author:  Matvey
  *  Date:   06/04/2018
  */
+// main class , parse parameters and orchestrate flow
 public class PuzzleManager {
 
     @Parameter(names = { "-threads"}, description = "Number of threads, default 4")
@@ -40,10 +41,10 @@ public class PuzzleManager {
 //                fileManager.printError();
 //            }
             fileManager.printPuzzleResult(solver);
-        } catch (WrongElementsFormat wrongElementsFormat) {
+        } catch (WrongElementsFormat e) {
             Solver solver = new Solver();
             fileManager.printPuzzleResult(solver);
-        }
+            }
     }
 
     public static void main(String[] args) throws IOException {

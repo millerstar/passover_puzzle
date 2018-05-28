@@ -1,6 +1,6 @@
 package com.jigsaw.impl;
 
-public class WrongElementsFormat extends Throwable {
+public class WrongElementsFormat extends Exception {
     public WrongElementsFormat(){
 
     }

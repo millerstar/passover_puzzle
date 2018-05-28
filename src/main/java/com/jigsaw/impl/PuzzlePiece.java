@@ -164,9 +164,11 @@ public class PuzzlePiece {
             shape.getSideRight()<-1||shape.getSideRight()>1 ||
             shape.getSideBottom()<-1||shape.getSideBottom()>1 ||
             shape.getSideTop()<-1||shape.getSideTop()>1){
+            MessageAccumulator.addMassage(String.format("Piece %d side not valid", getPieceID()));
             return false;
         }
         if (getSumOfAllSides()>4||getSumOfAllSides()<-4){
+            MessageAccumulator.addMassage(String.format("Sum of piece %d sides wrong", getPieceID()));
             return false;
         }
 

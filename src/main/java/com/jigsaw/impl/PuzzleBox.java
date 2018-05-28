@@ -135,13 +135,14 @@ public class PuzzleBox {
                 numberOfValidPiecesInBox++;
             }
         }
-        return numberOfValidPiecesInBox == allPiecesInBoard.size();
 
 //        if (!( basicValidations(validator) &&
-//                        isPuzzleSolvable() &&
-//                        isSumOfAllSidesZero())){
+//                isPuzzleSolvable() &&
+//                isSumOfAllSidesZero())){
 //            throw new WrongElementsFormat();
 //        }
+
+        return numberOfValidPiecesInBox == allPiecesInBoard.size();
     }
 
     private boolean basicValidations(PuzzlePieceValidator validator) {
