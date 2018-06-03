@@ -1,14 +1,15 @@
 package com.jigsaw.jsonImpl;
 
 import com.google.gson.Gson;
+import com.jigsaw.impl.PuzzleBox;
 
 public class JsonIO {
 
 
-    public Puzzle readJson(String jsonFromClient){
+    public PuzzleBox readJson(String jsonFromClient){
 
         Gson gson = new Gson();
-        Puzzle puzzleFromJson = gson.fromJson(jsonFromClient, Puzzle.class);
+        PuzzleBox puzzleFromJson = gson.fromJson(jsonFromClient, PuzzleBox.class);
         System.out.println(puzzleFromJson);
         return puzzleFromJson;
 
