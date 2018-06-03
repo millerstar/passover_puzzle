@@ -6,7 +6,11 @@
 
     <groupId>passover-project</groupId>
     <artifactId>passover_puzzle</artifactId>
+    <packaging>pom</packaging>
     <version>1.0-SNAPSHOT</version>
+    <modules>
+        <module>puzzle-client</module>
+    </modules>
 
     <properties>
         <!-- Generic properties -->
